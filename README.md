@@ -47,7 +47,7 @@ boot.pval(grav1.boot, type = "stud", theta_null = 0)
 Confidence intervals and p-values for the coefficients of regression models can be obtained using the `boot_summary` function. Currently, the following models are supported:
 
 - Linear models fitted using `lm`,
-- Generalised linear models fitted using `glm` or `negbin`,
+- Generalised linear models fitted using `glm` or `glm.nb`,
 - Nonlinear models fitted using `nls`,
 - Linear mixed models fitted using `lme4::lmer`,
 - Generalised linear mixed models fitted using `lme4::glmer`.
