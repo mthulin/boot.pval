@@ -1,12 +1,12 @@
 Package: boot.pval
 Title: Bootstrap p-values
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
     person(given = "Måns",
            family = "Thulin",
            role = c("aut", "cre"),
            email = "mans@statistikkonsult.com")
-Description: Computes bootstrap p-values through inversion of confidence intervals.
+Description: Computation of bootstrap p-values through inversion of confidence intervals.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -17,4 +17,5 @@ Imports:
     boot,
     Rdpack,
     car,
-    stats
+    stats,
+    lme4

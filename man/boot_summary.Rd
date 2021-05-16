@@ -7,7 +7,7 @@
 boot_summary(
   model,
   type = "perc",
-  method = "residual",
+  method = NULL,
   conf.level = 0.95,
   R = 999,
   pval_precision = NULL,
@@ -16,11 +16,11 @@ boot_summary(
 )
 }
 \arguments{
-\item{model}{An object of class "lm", "glm", or "nls".}
+\item{model}{An object fitted using "lm", "glm", "nls", "lmer" or "glmer".}
 
-\item{type}{A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "perc" (the default), and "bca".}
+\item{type}{A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "perc" (the default), and "bca". "stud" and "bca" are not available for "lmer" and "glmer" models.}
 
-\item{method}{Either "residual" (for resampling of scaled and centred residuals, the default) or "case" (for case resampling).}
+\item{method}{The method used for boostrapping. For "lm", "glm", and "nls" objects either "residual" (for resampling of scaled and centred residuals, the default) or "case" (for case resampling). For "merMod" objects either "parametric" (the default) or "semiparametric".}
 
 \item{conf.level}{The confidence level for the confidence intervals. The default is 0.95.}
 
@@ -30,19 +30,20 @@ boot_summary(
 
 \item{adjust.method}{Adjustment of p-values for multiple comparisons using \code{p.adjust}. The default is "none", in which case the p-value aren't adjusted. The other options are "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", and "fdr"; see \code{?p.adjust} for details on these methods.}
 
-\item{...}{Additional arguments passed to \code{boot}.}
+\item{...}{Additional arguments passed to \code{Boot} or \code{bootMer}.}
 }
 \value{
 A data frame containing coefficient estimates, bootstrap confidence intervals, and bootstrap p-values.
 }
 \description{
-Summaries for "lm", "glm", and "nls" objects, using the bootstrap for p-values and confidence intervals.
+Summaries for "lm", "glm", "nls", and "merMod" ("lmer", "glmer") objects, using the bootstrap for p-values and confidence intervals.
 }
 \examples{
 # Bootstrap summary of a linear model for mtcars:
-model <- lm(mpg ~ hp + wt, data = mtcars)
+model <- lm(mpg ~ hp + vs, data = mtcars)
 boot_summary(model)
 
-# Adjust p-values for multiplicity using Holm's method:
-boot_summary(model, adjust.method = "holm")
+# Use 9999 bootstrap replicates and adjust p-values for
+#multiplicity using Holm's method:
+boot_summary(model, R = 9999, adjust.method = "holm")
 }
