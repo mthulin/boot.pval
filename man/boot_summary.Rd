@@ -20,7 +20,7 @@ boot_summary(
 
 \item{type}{A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "perc" (the default), and "bca". "stud" and "bca" are not available for "lmer" and "glmer" models.}
 
-\item{method}{The method used for boostrapping. For "lm", "glm", and "nls" objects either "residual" (for resampling of scaled and centred residuals, the default) or "case" (for case resampling). For "merMod" objects either "parametric" (the default) or "semiparametric".}
+\item{method}{The method used for bootstrapping. For "lm", "glm", and "nls" objects either "residual" (for resampling of scaled and centred residuals, the default) or "case" (for case resampling). For "merMod" objects either "parametric" (the default) or "semiparametric".}
 
 \item{conf.level}{The confidence level for the confidence intervals. The default is 0.95.}
 
@@ -28,7 +28,7 @@ boot_summary(
 
 \item{pval_precision}{The desired precision for the p-value. The default is 1/R.}
 
-\item{adjust.method}{Adjustment of p-values for multiple comparisons using \code{p.adjust}. The default is "none", in which case the p-value aren't adjusted. The other options are "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", and "fdr"; see \code{?p.adjust} for details on these methods.}
+\item{adjust.method}{Adjustment of p-values for multiple comparisons using \code{p.adjust}. The default is "none", in which case the p-values aren't adjusted. The other options are "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", and "fdr"; see \code{?p.adjust} for details on these methods.}
 
 \item{...}{Additional arguments passed to \code{Boot} or \code{bootMer}.}
 }
@@ -38,6 +38,13 @@ A data frame containing coefficient estimates, bootstrap confidence intervals, a
 \description{
 Summaries for "lm", "glm", "nls", and "merMod" ("lmer", "glmer") objects, using the bootstrap for p-values and confidence intervals.
 }
+\details{
+p-values can be computed by inverting the corresponding confidence intervals, as described in Section 12.2 of Thulin (2021) and Section 3.12 in Hall (1992). This function computes p-values in this way from "boot" objects. The approach relies on the fact that:
+\itemize{
+\item the p-value of the test for the parameter theta is the smallest alpha such that theta is not contained in the corresponding 1-alpha confidence interval,
+\item for a test of the parameter theta with significance level alpha, the set of values of theta that aren't rejected by the test (when used as the null hypothesis) is a 1-alpha confidence interval for theta.
+}
+}
 \examples{
 # Bootstrap summary of a linear model for mtcars:
 model <- lm(mpg ~ hp + vs, data = mtcars)
@@ -46,4 +53,9 @@ boot_summary(model)
 # Use 9999 bootstrap replicates and adjust p-values for
 #multiplicity using Holm's method:
 boot_summary(model, R = 9999, adjust.method = "holm")
+}
+\references{
+\insertRef{hall92}{boot.pval}
+
+\insertRef{thulin21}{boot.pval}
 }

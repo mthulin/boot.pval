@@ -4,15 +4,22 @@
 #'
 #' @param model An object fitted using "lm", "glm", "nls", "lmer" or "glmer".
 #' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "perc" (the default), and "bca". "stud" and "bca" are not available for "lmer" and "glmer" models.
-#' @param method The method used for boostrapping. For "lm", "glm", and "nls" objects either "residual" (for resampling of scaled and centred residuals, the default) or "case" (for case resampling). For "merMod" objects either "parametric" (the default) or "semiparametric".
+#' @param method The method used for bootstrapping. For "lm", "glm", and "nls" objects either "residual" (for resampling of scaled and centred residuals, the default) or "case" (for case resampling). For "merMod" objects either "parametric" (the default) or "semiparametric".
 #' @param conf.level The confidence level for the confidence intervals. The default is 0.95.
 #' @param R The number of bootstrap replicates. The default is 999.
 #' @param pval_precision The desired precision for the p-value. The default is 1/R.
-#' @param adjust.method Adjustment of p-values for multiple comparisons using \code{p.adjust}. The default is "none", in which case the p-value aren't adjusted. The other options are "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", and "fdr"; see \code{?p.adjust} for details on these methods.
+#' @param adjust.method Adjustment of p-values for multiple comparisons using \code{p.adjust}. The default is "none", in which case the p-values aren't adjusted. The other options are "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", and "fdr"; see \code{?p.adjust} for details on these methods.
 #' @param ... Additional arguments passed to \code{Boot} or \code{bootMer}.
 #'
 #' @return A data frame containing coefficient estimates, bootstrap confidence intervals, and bootstrap p-values.
+#' @details p-values can be computed by inverting the corresponding confidence intervals, as described in Section 12.2 of Thulin (2021) and Section 3.12 in Hall (1992). This function computes p-values in this way from "boot" objects. The approach relies on the fact that:
+#' - the p-value of the test for the parameter theta is the smallest alpha such that theta is not contained in the corresponding 1-alpha confidence interval,
+#' - for a test of the parameter theta with significance level alpha, the set of values of theta that aren't rejected by the test (when used as the null hypothesis) is a 1-alpha confidence interval for theta.
 #' @importFrom Rdpack reprompt
+#' @references
+#'  \insertRef{hall92}{boot.pval}
+#'
+#'  \insertRef{thulin21}{boot.pval}
 #' @examples
 #' # Bootstrap summary of a linear model for mtcars:
 #' model <- lm(mpg ~ hp + vs, data = mtcars)
@@ -85,8 +92,11 @@ boot_summary <- function(model,
                               ...)
   }
   if(adjust.method != "none") {
-    results$`Adjusted p-value` <- stats::p.adjust(results[, 4], method = adjust.method)
+    results$`Adjusted p-value` <- round(stats::p.adjust(results[, 4], method = adjust.method), round(log10(R)))
   }
+  # Round p-values:
+  results[,4] <- round(results[,4], round(log10(R)))
+
 
   return(results)
 }
