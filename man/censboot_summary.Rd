@@ -59,10 +59,12 @@ model <- survreg(formula = Surv(time, status) ~ age + sex, data = lung,
                  dist = "weibull", model = TRUE)
 censboot_summary(model)
 
-# Cox PH:
+# Cox PH model:
 model <- coxph(formula = Surv(time, status) ~ age + sex, data = lung,
                model = TRUE)
+# Table with hazard ratios:
 censboot_summary(model)
+censboot_summary(model, coef = "raw")
 }
 \references{
 \insertRef{hall92}{boot.pval}

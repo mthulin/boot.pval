@@ -1,6 +1,6 @@
 #' Summarising Regression Models Using the Bootstrap
 #'
-#' Summaries for "lm", "glm", "nls", and "merMod" ("lmer", "glmer") objects, using the bootstrap for p-values and confidence intervals.
+#' Summaries for regression models, including "lm", "glm", "nls", and "merMod" ("lmer", "glmer") objects, using the bootstrap for p-values and confidence intervals.
 #'
 #' @param model An object fitted using "lm", "glm", "nls", "lmer" or "glmer".
 #' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "perc" (the default), and "bca". "stud" and "bca" are not available for "lmer" and "glmer" models.
@@ -15,6 +15,8 @@
 #' @details p-values can be computed by inverting the corresponding confidence intervals, as described in Section 12.2 of Thulin (2021) and Section 3.12 in Hall (1992). This function computes p-values in this way from "boot" objects. The approach relies on the fact that:
 #' - the p-value of the test for the parameter theta is the smallest alpha such that theta is not contained in the corresponding 1-alpha confidence interval,
 #' - for a test of the parameter theta with significance level alpha, the set of values of theta that aren't rejected by the test (when used as the null hypothesis) is a 1-alpha confidence interval for theta.
+#'
+#' The function can be used with "lm", "glm", "nls", and "merMod" ("lmer", "glmer") objects. In addition, it should work for any regression model such that: \code{residuals(object, type="pearson")} returns Pearson residuals; \code{fitted(object)} returns fitted values; \code{hatvalues(object)} returns the leverages, or perhaps the value 1 which will effectively ignore setting the hatvalues. In addition, the \code{data} argument should contain no missing values among the columns actually used in fitting the model.
 #' @importFrom Rdpack reprompt
 #' @references
 #'  \insertRef{hall92}{boot.pval}
@@ -40,18 +42,7 @@ boot_summary <- function(model,
 {
   # Bootstrap the regression model:
   # (Different functions are used depending on the type of model.)
-  if(class(model) %in% c("lm", "glm", "nls")){
-    # Use car::Boot for lm, glm and nls objects:
-    if(is.null(method)) { method <- "residual" }
-    # For Boot to work inside this function, we must export the car environment
-    # to the global environment
-    # (see https://cran.r-project.org/web/packages/car/vignettes/embedding.pdf).
-    if(!exists(".carEnv")) { assign(".carEnv", car::.carEnv, envir = .GlobalEnv) }
-    boot_res <- car::Boot(model,
-                          method = method,
-                          R = R,
-                          ...)
-  } else if(class(model) %in% c("lmerMod", "glmerMod"))
+  if(class(model) %in% c("lmerMod", "glmerMod"))
   {
     # Use lme4::bootMer for mixed models:
     if(is.null(method)) { method <- "parametric" }
@@ -61,7 +52,16 @@ boot_summary <- function(model,
                               nsim = R,
                               ...)
   } else {
-    stop("\"model\" must be an object of class \"lm\", \"glm\", \"nls\", or \"merMod\".")
+    # Use car::Boot for other objects, including lm, glm and nls objects:
+    if(is.null(method)) { method <- "residual" }
+    # For Boot to work inside this function, we must export the car environment
+    # to the global environment
+    # (see https://cran.r-project.org/web/packages/car/vignettes/embedding.pdf).
+    if(!exists(".carEnv")) { assign(".carEnv", car::.carEnv, envir = .GlobalEnv) }
+    boot_res <- car::Boot(model,
+                          method = method,
+                          R = R,
+                          ...)
   }
 
   # Create data frame to store results in:
