@@ -9,7 +9,7 @@
 #' @param R The number of bootstrap replicates. The default is 999.
 #' @param pval_precision The desired precision for the p-value. The default is 1/R.
 #' @param adjust.method Adjustment of p-values for multiple comparisons using \code{p.adjust}. The default is "none", in which case the p-values aren't adjusted. The other options are "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", and "fdr"; see \code{?p.adjust} for details on these methods.
-#' @param ... Additional arguments passed to \code{Boot} or \code{bootMer}.
+#' @param ... Additional arguments passed to \code{Boot} or \code{bootMer}, such as \code{parallel} for parallel computations. See \code{?car::Boot} and \code{?lme4::bootMer} for details.
 #'
 #' @return A data frame containing coefficient estimates, bootstrap confidence intervals, and bootstrap p-values.
 #' @details p-values can be computed by inverting the corresponding confidence intervals, as described in Section 12.2 of Thulin (2021) and Section 3.12 in Hall (1992). This function computes p-values in this way from "boot" objects. The approach relies on the fact that:
@@ -39,16 +39,21 @@ boot_summary <- function(model,
                       ...)
 {
   # Bootstrap the regression model:
+  # (Different functions are used depending on the type of model.)
   if(class(model) %in% c("lm", "glm", "nls")){
+    # Use car::Boot for lm, glm and nls objects:
     if(is.null(method)) { method <- "residual" }
-    library(car) # Required for Boot to work inside of function
-    .carEnv <- car:::.carEnv # Required for Boot to work inside of function
+    # For Boot to work inside this function, we must export the car environment
+    # to the global environment
+    # (see https://cran.r-project.org/web/packages/car/vignettes/embedding.pdf).
+    if(!exists(".carEnv")) { assign(".carEnv", car::.carEnv, envir = .GlobalEnv) }
     boot_res <- car::Boot(model,
                           method = method,
                           R = R,
                           ...)
   } else if(class(model) %in% c("lmerMod", "glmerMod"))
   {
+    # Use lme4::bootMer for mixed models:
     if(is.null(method)) { method <- "parametric" }
     boot_res <- lme4::bootMer(model,
                               FUN = lme4::fixef,

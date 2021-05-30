@@ -2,4 +2,5 @@
 
 export(boot.pval)
 export(boot_summary)
+export(censboot_summary)
 importFrom(Rdpack,reprompt)
