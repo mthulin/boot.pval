@@ -41,8 +41,8 @@ Summaries for regression models, including "lm", "glm", "nls", and "merMod" ("lm
 \details{
 p-values can be computed by inverting the corresponding confidence intervals, as described in Section 12.2 of Thulin (2021) and Section 3.12 in Hall (1992). This function computes p-values in this way from "boot" objects. The approach relies on the fact that:
 \itemize{
-\item the p-value of the test for the parameter theta is the smallest alpha such that theta is not contained in the corresponding 1-alpha confidence interval,
-\item for a test of the parameter theta with significance level alpha, the set of values of theta that aren't rejected by the test (when used as the null hypothesis) is a 1-alpha confidence interval for theta.
+\item the p-value of the two-sided test for the parameter theta is the smallest alpha such that theta is not contained in the corresponding 1-alpha confidence interval,
+\item for a test of the parameter theta with significance level alpha, the set of values of theta that aren't rejected by the two-sided test (when used as the null hypothesis) is a 1-alpha confidence interval for theta.
 }
 
 The function can be used with "lm", "glm", "nls", and "merMod" ("lmer", "glmer") objects. In addition, it should work for any regression model such that: \code{residuals(object, type="pearson")} returns Pearson residuals; \code{fitted(object)} returns fitted values; \code{hatvalues(object)} returns the leverages, or perhaps the value 1 which will effectively ignore setting the hatvalues. In addition, the \code{data} argument should contain no missing values among the columns actually used in fitting the model.
