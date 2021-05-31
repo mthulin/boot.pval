@@ -50,11 +50,11 @@ The function can be used with "lm", "glm", "nls", and "merMod" ("lmer", "glmer")
 \examples{
 # Bootstrap summary of a linear model for mtcars:
 model <- lm(mpg ~ hp + vs, data = mtcars)
-boot_summary(model)
+boot_summary(model, R = 99)
+# (Values for R greater than 99 are recommended for most applications.)
 
-# Use 9999 bootstrap replicates and adjust p-values for
-#multiplicity using Holm's method:
-boot_summary(model, R = 9999, adjust.method = "holm")
+# Adjust p-values for multiplicity using Holm's method:
+boot_summary(model, R = 99, adjust.method = "holm")
 }
 \references{
 \insertRef{hall92}{boot.pval}

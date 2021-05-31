@@ -22,7 +22,7 @@
 #' # H0: ratio = 1.4
 #' library(boot)
 #' ratio <- function(d, w) sum(d$x * w)/sum(d$u * w)
-#' city.boot <- boot(city, ratio, R = 999, stype = "w", sim = "ordinary")
+#' city.boot <- boot(city, ratio, R = 99, stype = "w", sim = "ordinary")
 #' boot.pval(city.boot, theta_null = 1.4)
 #'
 #' # Studentized test for the two sample difference of means problem
@@ -38,7 +38,7 @@
 #'   c(m1 - m2, (ss1 + ss2)/(sum(f) - 2))
 #' }
 #' grav1 <- gravity[as.numeric(gravity[,2]) >= 7, ]
-#' grav1.boot <- boot(grav1, diff.means, R = 999, stype = "f",
+#' grav1.boot <- boot(grav1, diff.means, R = 99, stype = "f",
 #'                    strata = grav1[ ,2])
 #' boot.pval(grav1.boot, type = "stud", theta_null = 0)
 #' @export

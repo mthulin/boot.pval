@@ -49,15 +49,16 @@ reg_coef_survreg <- function(data, formula, dist) {
 #' # Note that model = TRUE is required for use with censboot_summary:
 #' model <- survreg(formula = Surv(time, status) ~ age + sex, data = lung,
 #'                  dist = "weibull", model = TRUE)
-#' censboot_summary(model)
+#' censboot_summary(model, R = 99)
+#' # (Values for R greater than 99 are recommended for most applications.)
 #'
 #' # Cox PH model:
 #' model <- coxph(formula = Surv(time, status) ~ age + sex, data = lung,
 #'                model = TRUE)
 #' # Table with hazard ratios:
-#' censboot_summary(model)
+#' censboot_summary(model, R = 99)
 #  # Table with original coefficients:
-#' censboot_summary(model, coef = "raw")
+#' censboot_summary(model, coef = "raw", R = 99)
 #' @export
 censboot_summary <- function(model,
                  type = "perc",
