@@ -57,7 +57,7 @@ boot_summary <- function(model,
     # For Boot to work inside this function, we must export the car environment
     # to the global environment
     # (see https://cran.r-project.org/web/packages/car/vignettes/embedding.pdf).
-    if(!exists(".carEnv")) { assign(".carEnv", car::.carEnv, envir = .GlobalEnv) }
+    assign(".carEnv", car::.carEnv, envir = parent.frame())
     boot_res <- car::Boot(model,
                           method = method,
                           R = R,
