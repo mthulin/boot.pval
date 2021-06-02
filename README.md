@@ -2,7 +2,13 @@
 This R package provides functions for computing bootstrap p-values based on `boot` objects, and convenience functions for bootstrap confidence intervals and p-values for various regression models.
 
 ## Installation
-To install the package from Github:
+To install the package from CRAN:
+
+```
+install.packages("boot.pval")
+```
+
+To install the development version from Github:
 
 ```
 library(devtools)
