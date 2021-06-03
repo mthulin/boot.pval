@@ -23,7 +23,7 @@ reg_coef_survreg <- function(data, formula, dist) {
 #'
 #' Summaries for "coxph" and "survreg" objects, using the bootstrap for p-values and confidence intervals.
 #'
-#' @param model An object fitted using "lm", "glm", "nls", "lmer" or "glmer".
+#' @param model An object fitted using "coxph" or "survreg".
 #' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "perc" (the default), and "bca". "stud" and "bca" are not available for "lmer" and "glmer" models.
 #' @param sim The method used for bootstrapping. See \code{?boot::censboot} for details. Currently only "ordinary" (case resampling) is supported.
 #' @param strata The strata used in the calls to \code{survfit.} It can be a vector or a matrix with 2 columns. If it is a vector then it is assumed to be the strata for the survival distribution, and the censoring distribution is assumed to be the same for all observations. If it is a matrix then the first column is the strata for the survival distribution and the second is the strata for the censoring distribution. When \code{sim = "ordinary"}, only one set of strata is used to stratify the observations. This is taken to be the first column of \code{strata} when it is a matrix.

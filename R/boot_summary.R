@@ -1,8 +1,8 @@
 #' Summarising Regression Models Using the Bootstrap
 #'
-#' Summaries for regression models, including "lm", "glm", "nls", and "merMod" ("lmer", "glmer") objects, using the bootstrap for p-values and confidence intervals.
+#' Summaries for regression models, including "lm", "glm", "glm.nb", nls", "rlm", and "merMod" ("lmer", "glmer") objects, using the bootstrap for p-values and confidence intervals.
 #'
-#' @param model An object fitted using "lm", "glm", "nls", "lmer" or "glmer".
+#' @param model An object fitted using e.g. "lm", "glm", "glm.nb", "nls", "rlm", "lmer", or "glmer".
 #' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "perc" (the default), and "bca". "stud" and "bca" are not available for "lmer" and "glmer" models.
 #' @param method The method used for bootstrapping. For "lm", "glm", and "nls" objects either "residual" (for resampling of scaled and centred residuals, the default) or "case" (for case resampling). For "merMod" objects either "parametric" (the default) or "semiparametric".
 #' @param conf.level The confidence level for the confidence intervals. The default is 0.95.
@@ -42,7 +42,7 @@ boot_summary <- function(model,
 {
   # Bootstrap the regression model:
   # (Different functions are used depending on the type of model.)
-  if(class(model) %in% c("lmerMod", "glmerMod"))
+  if(class(model)[1] %in% c("lmerMod", "glmerMod"))
   {
     # Use lme4::bootMer for mixed models:
     if(is.null(method)) { method <- "parametric" }
@@ -52,7 +52,7 @@ boot_summary <- function(model,
                               nsim = R,
                               ...)
   } else {
-    # Use car::Boot for other objects, including lm, glm and nls objects:
+    # Use car::Boot for other objects, including lm, glm, and nls objects:
     if(is.null(method)) { method <- "residual" }
     # For Boot to work inside this function, we must export the car environment
     # to the global environment

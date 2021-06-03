@@ -1,6 +1,6 @@
 Package: boot.pval
 Title: Bootstrap p-Values
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     person(given = "Måns",
            family = "Thulin",
