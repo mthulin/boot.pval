@@ -18,7 +18,7 @@ censboot_summary(
 )
 }
 \arguments{
-\item{model}{An object fitted using "lm", "glm", "nls", "lmer" or "glmer".}
+\item{model}{An object fitted using "coxph" or "survreg".}
 
 \item{type}{A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "perc" (the default), and "bca". "stud" and "bca" are not available for "lmer" and "glmer" models.}
 

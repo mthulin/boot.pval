@@ -1,9 +1,5 @@
-## Resubmission
-This is a resubmission. In this version I have:
-
-* Fixed the erroneous LICENSE file.
-
-* Rewritten the part of boot_summary() that placed an object in the .GlobalEnv.
+## Updated package
+This is a new version of the package. Changes have been made in the documentation, and additional error messages have been added.
 
 ## Test environments
 * local Ubuntu 18.04 install, R 4.0.3
