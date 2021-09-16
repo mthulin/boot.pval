@@ -24,7 +24,7 @@ reg_coef_survreg <- function(data, formula, dist) {
 #' Summaries for "coxph" and "survreg" objects, using the bootstrap for p-values and confidence intervals.
 #'
 #' @param model An object fitted using "coxph" or "survreg".
-#' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "perc" (the default), and "bca". "stud" and "bca" are not available for "lmer" and "glmer" models.
+#' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "perc" (the default), and "bca".
 #' @param sim The method used for bootstrapping. See \code{?boot::censboot} for details. Currently only "ordinary" (case resampling) is supported.
 #' @param strata The strata used in the calls to \code{survfit.} It can be a vector or a matrix with 2 columns. If it is a vector then it is assumed to be the strata for the survival distribution, and the censoring distribution is assumed to be the same for all observations. If it is a matrix then the first column is the strata for the survival distribution and the second is the strata for the censoring distribution. When \code{sim = "ordinary"}, only one set of strata is used to stratify the observations. This is taken to be the first column of \code{strata} when it is a matrix.
 #' @param coef A string specifying whether to use exponentiated coefficients in the summary table. Either "exp" (for exponentiated coefficients, i.e. hazard ratios in the case of a Cox PH model) or "raw" (for coefficients on their original scale). The default is "exp".
@@ -35,7 +35,7 @@ reg_coef_survreg <- function(data, formula, dist) {
 #' @param ... Additional arguments passed to \code{censboot}, such as \code{parallel} for parallel computations. See \code{?boot::censboot} for details.
 #'
 #' @return A data frame containing coefficient estimates, bootstrap confidence intervals, and bootstrap p-values.
-#' @details p-values can be computed by inverting the corresponding confidence intervals, as described in Section 12.2 of Thulin (2021) and Section 3.12 in Hall (1992). This function computes p-values in this way from "boot" objects. The approach relies on the fact that:
+#' @details p-values can be computed by inverting the corresponding confidence intervals, as described in Section 12.2 of Thulin (2021) and Section 3.12 in Hall (1992). This function computes p-values in this way from "coxph" or "survreg" objects. The approach relies on the fact that:
 #' - the p-value of the two-sided test for the parameter theta is the smallest alpha such that theta is not contained in the corresponding 1-alpha confidence interval,
 #' - for a test of the parameter theta with significance level alpha, the set of values of theta that aren't rejected by the two-sided test (when used as the null hypothesis) is a 1-alpha confidence interval for theta.
 #' @importFrom Rdpack reprompt

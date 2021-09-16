@@ -16,20 +16,20 @@ install_github("mthulin/boot.pval")
 ```
 
 ## Background
-p-values can be computed by inverting the corresponding confidence intervals, as described in Section 12.2 of [Thulin (2021)](http://www.modernstatisticswithr.com/mathschap.html#confintequal) and Section 3.12 in [Hall (1992)](https://www.springer.com/gp/book/9780387977201). This package contains functions for computing bootstrap p-values in this way from `boot` objects. The approach relies on the fact that:
+p-values can be computed by inverting the corresponding confidence intervals, as described in Section 12.2 of [Thulin (2021)](http://www.modernstatisticswithr.com/mathschap.html#confintequal) and Section 3.12 in [Hall (1992)](https://www.springer.com/gp/book/9780387977201). This package contains functions for computing bootstrap p-values in this way. The approach relies on the fact that:
 
 - The p-value of the two-sided test for the parameter theta is the smallest alpha such that theta is not contained in the corresponding 1-alpha confidence interval,
 - For a test of the parameter theta with significance level alpha, the set of values of theta that aren't rejected by the two-sided test (when used as the null hypothesis) is a 1-alpha confidence interval for theta.
 
 
 ## Summaries for regression models
-Summary tables with confidence intervals and p-values for the coefficients of regression models can be obtained using the `boot_summary` function. Currently, the following models are supported:
+Summary tables with confidence intervals and p-values for the coefficients of regression models can be obtained using the `boot_summary` (most models) and `censboot_summary` (models with censored response variables) functions. Currently, the following models are supported:
 
 - Linear models fitted using `lm`,
 - Generalised linear models fitted using `glm` or `glm.nb`,
 - Nonlinear models fitted using `nls`,
 - Robust linear models fitted using `MASS::rlm``,
-- Linear mixed models fitted using `lme4::lmer`,
+- Linear mixed models fitted using `lme4::lmer` or `lmerTest::lmer`,
 - Generalised linear mixed models fitted using `lme4::glmer`.
 - Cox PH regression models fitted using `survival::coxph` (using `censboot_summary`).
 - Accelerated failure time models fitted using `survival::survreg` (using `censboot_summary`).
@@ -75,7 +75,7 @@ censboot_summary(model, coef = "raw")
 ```
 
 ## Other hypothesis tests
-Bootstrap p-values for hypothesis tests can be obtained using the `boot.pval` function. The following examples are extensions of those given in the documentation for `boot::boot`:
+Bootstrap p-values for hypothesis tests based on `boot` objects can be obtained using the `boot.pval` function. The following examples are extensions of those given in the documentation for `boot::boot`:
 
 ```
 # Hypothesis test for the city data
