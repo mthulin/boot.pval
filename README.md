@@ -28,7 +28,7 @@ Summary tables with confidence intervals and p-values for the coefficients of re
 - Linear models fitted using `lm`,
 - Generalised linear models fitted using `glm` or `glm.nb`,
 - Nonlinear models fitted using `nls`,
-- Robust linear models fitted using `MASS::rlm``,
+- Robust linear models fitted using `MASS::rlm`,
 - Linear mixed models fitted using `lme4::lmer` or `lmerTest::lmer`,
 - Generalised linear mixed models fitted using `lme4::glmer`.
 - Cox PH regression models fitted using `survival::coxph` (using `censboot_summary`).
