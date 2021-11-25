@@ -7,6 +7,7 @@
 #' @param method The method used for bootstrapping. For "lm" and "nls" objects use either "residual" (for resampling of scaled and centred residuals, the default) or "case" (for case resampling). For "glm" objects, use "case" (the default). For "merMod" objects (mixed models) use either "parametric" (the default) or "semiparametric".
 #' @param conf.level The confidence level for the confidence intervals. The default is 0.95.
 #' @param R The number of bootstrap replicates. The default is 999.
+#' @param coef A string specifying whether to use exponentiated coefficients in the summary table. Either "exp" (for exponentiated coefficients, i.e. odds ratios in the case of a logistic regression model) or "raw" (for coefficients on their original scale). The default is "raw", which is recommended for linear models.
 #' @param pval_precision The desired precision for the p-value. The default is 1/R.
 #' @param adjust.method Adjustment of p-values for multiple comparisons using \code{p.adjust}. The default is "none", in which case the p-values aren't adjusted. The other options are "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", and "fdr"; see \code{?p.adjust} for details on these methods.
 #' @param ... Additional arguments passed to \code{Boot} or \code{bootMer}, such as \code{parallel} for parallel computations. See \code{?car::Boot} and \code{?lme4::bootMer} for details.
@@ -36,6 +37,7 @@ boot_summary <- function(model,
                       method = NULL,
                       conf.level = 0.95,
                       R = 999,
+                      coef = "raw",
                       pval_precision = NULL,
                       adjust.method = "none",
                       ...)
@@ -88,6 +90,12 @@ boot_summary <- function(model,
                        stud = ci$student[,4:5],
                        perc = ci$percent[,4:5],
                        bca = ci$bca[,4:5])
+  }
+
+  # Exponentiate coefficients if requested:
+  if(coef == "exp") {
+    cat("Using exponentiated coefficients.\n")
+    results[,1:3] <- exp(results[,1:3])
   }
 
   # Compute p-values:

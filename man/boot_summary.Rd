@@ -10,6 +10,7 @@ boot_summary(
   method = NULL,
   conf.level = 0.95,
   R = 999,
+  coef = "raw",
   pval_precision = NULL,
   adjust.method = "none",
   ...
@@ -25,6 +26,8 @@ boot_summary(
 \item{conf.level}{The confidence level for the confidence intervals. The default is 0.95.}
 
 \item{R}{The number of bootstrap replicates. The default is 999.}
+
+\item{coef}{A string specifying whether to use exponentiated coefficients in the summary table. Either "exp" (for exponentiated coefficients, i.e. odds ratios in the case of a logistic regression model) or "raw" (for coefficients on their original scale). The default is "raw", which is recommended for linear models.}
 
 \item{pval_precision}{The desired precision for the p-value. The default is 1/R.}
 

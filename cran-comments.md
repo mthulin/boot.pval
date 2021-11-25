@@ -1,5 +1,5 @@
 ## Updated package
-This is a new version of the package. A critical bug in boot_summary() has been fixed: the function no longer fails when used in conjunction with the lmerTest package.
+This is a new version of the package. A bug in censboot_summary() has been fixed, which caused incorrect p-values for exponentiated coefficients. Additional options for boot_summary() have also been added.
 
 ## Test environments
 * local Ubuntu 18.04 install, R 4.0.3

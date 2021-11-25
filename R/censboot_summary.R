@@ -77,6 +77,11 @@ censboot_summary <- function(model,
   if(is.null(strata)) { strata <- matrix(1, nrow(model$y), 2) }
   cox <- ifelse(class(model) == "coxph", TRUE, FALSE)
 
+  res_type <- switch(coef,
+                     exp = "exponentiated",
+                     raw = "raw")
+  cat("Using", res_type, "coefficients.\n")
+
   if(cox) {
     # Cox PH regression:
     boot_res <- boot::censboot(data = cbind(data.frame(as.matrix(model$model[,1])),
@@ -133,7 +138,9 @@ censboot_summary <- function(model,
   {
     results[i, 4] <- boot.pval(boot_res,
                                type = type,
-                               theta_null = 0,
+                               theta_null = switch(coef,
+                                                   exp = 1,
+                                                   raw = 0),
                                pval_precision = pval_precision,
                                index = i,
                                ...)
