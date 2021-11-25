@@ -1,5 +1,5 @@
 # boot.pval version 0.4
-A bug in censboot_summary() has been fixed, which caused incorrect p-values for exponentiated coefficients. Additional options for boot_summary() have also been added.
+Two bugs in censboot_summary() have been fixed: a) a bug which caused incorrect p-values for exponentiated coefficients, and b) a bug that cause the function to fail if the variables in the Surv object weren't named time and status. An options for creating a table for exponentiated coefficients using boot_summary() has also been added (useful e.g. for logistic regression models).
 
 # boot.pval version 0.3
 boot_summary() now also works for mixed linear models fitted using the lmerTest package. In previous releases, such models weren't correctly identified by boot_summary().

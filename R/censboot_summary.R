@@ -73,7 +73,7 @@ censboot_summary <- function(model,
 {
   # Check arguments:
   if(!(class(model) %in% c("coxph", "survreg"))) { stop("The model must be fitted using either coxph or survreg (see ?censboot_summary).") }
-  if(is.null(model$model)) { stop("The model must be fitted using model=TRUE (see ?censboot_summary).") }
+  if(is.null(model$model)) { stop("The model must be fitted using model=TRUE (see ?censboot_summary for examples).") }
   if(is.null(strata)) { strata <- matrix(1, nrow(model$y), 2) }
   cox <- ifelse(class(model) == "coxph", TRUE, FALSE)
 
@@ -82,9 +82,19 @@ censboot_summary <- function(model,
                      raw = "raw")
   cat("Using", res_type, "coefficients.\n")
 
+  # Creating response part of data frame, with correct column names
+  # (This section is needed for models where the variables in the Surv object
+  # aren't named time and status)
+  survmatrix <- data.frame(as.matrix(model$model[,1]))
+  survvarnames <- unlist(strsplit(as.character(stats::formula(model))[2], split = ","))
+  survvarnames <- gsub("Surv[(]", "", survvarnames)
+  survvarnames <- gsub(")", "", survvarnames)
+  survvarnames <- gsub(" ", "", survvarnames)
+  names(survmatrix) <- survvarnames
+
   if(cox) {
     # Cox PH regression:
-    boot_res <- boot::censboot(data = cbind(data.frame(as.matrix(model$model[,1])),
+    boot_res <- boot::censboot(data = cbind(survmatrix,
                           model$model[,2:ncol(model$model)]),
              statistic = switch(coef,
                                 exp = exp_reg_coef_cox,
@@ -97,7 +107,7 @@ censboot_summary <- function(model,
              ...)
   } else {
   # AFT models:
-  boot_res <- boot::censboot(data = cbind(data.frame(as.matrix(model$model[,1])),
+  boot_res <- boot::censboot(data = cbind(survmatrix,
                         model$model[,2:ncol(model$model)]),
            statistic = switch(coef,
                               exp = exp_reg_coef_survreg,
