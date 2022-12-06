@@ -71,7 +71,7 @@ boot_summary <- function(model,
   }
 
   # Create data frame to store results in:
-  if(class(model) %in% c("lmerMod", "glmerMod", "lmerModLmerTest")) {
+  if(class(model)[1] %in% c("lmerMod", "glmerMod", "lmerModLmerTest")) {
     estimates <- lme4::fixef(model)
     } else estimates <- model$coefficients
   p <- length(estimates)

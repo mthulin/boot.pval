@@ -72,10 +72,10 @@ censboot_summary <- function(model,
                  ...)
 {
   # Check arguments:
-  if(!(class(model) %in% c("coxph", "survreg"))) { stop("The model must be fitted using either coxph or survreg (see ?censboot_summary).") }
+  if(!(class(model)[1] %in% c("coxph", "survreg"))) { stop("The model must be fitted using either coxph or survreg (see ?censboot_summary).") }
   if(is.null(model$model)) { stop("The model must be fitted using model=TRUE (see ?censboot_summary for examples).") }
   if(is.null(strata)) { strata <- matrix(1, nrow(model$y), 2) }
-  cox <- ifelse(class(model) == "coxph", TRUE, FALSE)
+  cox <- ifelse(class(model)[1] == "coxph", TRUE, FALSE)
 
   res_type <- switch(coef,
                      exp = "exponentiated",
