@@ -1,3 +1,6 @@
+# boot.pval version 0.4.1
+Fixed a bug that caused boot_summary to throw an error when used with GLM's in R version >= 4.2.
+
 # boot.pval version 0.4
 Two bugs in censboot_summary() have been fixed: a) a bug which caused incorrect p-values for exponentiated coefficients, and b) a bug that cause the function to fail if the variables in the Surv object weren't named time and status. An options for creating a table for exponentiated coefficients using boot_summary() has also been added (useful e.g. for logistic regression models).
 
