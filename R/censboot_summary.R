@@ -19,12 +19,22 @@ reg_coef_survreg <- function(data, formula, dist) {
   return(stats::coef(m_boot))
 }
 
+exp_reg_coef_psm <- function(data, formula, dist) {
+  m_boot <- rms::psm(formula, data = data, dist = dist)
+  return(exp(stats::coef(m_boot)))
+}
+
+reg_coef_psm <- function(data, formula, dist) {
+  m_boot <- rms::psm(formula, data = data, dist = dist)
+  return(stats::coef(m_boot))
+}
+
 #' Summarising Survival Regression Models Using the Bootstrap
 #'
-#' Summaries for "coxph" and "survreg" objects, using the bootstrap for p-values and confidence intervals.
+#' Summaries for Cox proportional hazards and accelerated failure time models, using the bootstrap for p-values and confidence intervals.
 #'
-#' @param model An object fitted using "coxph" or "survreg".
-#' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "perc" (the default), and "bca".
+#' @param model An object fitted using "survival::coxph", "survival::survreg", or "rms::psm".
+#' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", and "perc" (the default).
 #' @param sim The method used for bootstrapping. See \code{?boot::censboot} for details. Currently only "ordinary" (case resampling) is supported.
 #' @param strata The strata used in the calls to \code{survfit.} It can be a vector or a matrix with 2 columns. If it is a vector then it is assumed to be the strata for the survival distribution, and the censoring distribution is assumed to be the same for all observations. If it is a matrix then the first column is the strata for the survival distribution and the second is the strata for the censoring distribution. When \code{sim = "ordinary"}, only one set of strata is used to stratify the observations. This is taken to be the first column of \code{strata} when it is a matrix.
 #' @param coef A string specifying whether to use exponentiated coefficients in the summary table. Either "exp" (for exponentiated coefficients, i.e. hazard ratios in the case of a Cox PH model) or "raw" (for coefficients on their original scale). The default is "exp".
@@ -41,7 +51,6 @@ reg_coef_survreg <- function(data, formula, dist) {
 #' @importFrom Rdpack reprompt
 #' @references
 #'  \insertRef{hall92}{boot.pval}
-#'
 #'  \insertRef{thulin21}{boot.pval}
 #' @examples
 #' library(survival)
@@ -61,18 +70,18 @@ reg_coef_survreg <- function(data, formula, dist) {
 #' censboot_summary(model, coef = "raw", R = 99)
 #' @export
 censboot_summary <- function(model,
-                 type = "perc",
-                 sim = "ordinary",
-                 strata = NULL,
-                 coef = "exp",
-                 conf.level = 0.95,
-                 R = 999,
-                 pval_precision = NULL,
-                 adjust.method = "none",
-                 ...)
+                             type = "perc",
+                             sim = "ordinary",
+                             strata = NULL,
+                             coef = "exp",
+                             conf.level = 0.95,
+                             R = 999,
+                             pval_precision = NULL,
+                             adjust.method = "none",
+                             ...)
 {
   # Check arguments:
-  if(!(class(model)[1] %in% c("coxph", "survreg"))) { stop("The model must be fitted using either coxph or survreg (see ?censboot_summary).") }
+  if(!(class(model)[1] %in% c("coxph", "survreg", "psm"))) { stop("The model must be fitted using either coxph, survreg, or psm (see ?censboot_summary).") }
   if(is.null(model$model)) { stop("The model must be fitted using model=TRUE (see ?censboot_summary for examples).") }
   if(is.null(strata)) { strata <- matrix(1, nrow(model$y), 2) }
   cox <- ifelse(class(model)[1] == "coxph", TRUE, FALSE)
@@ -95,30 +104,44 @@ censboot_summary <- function(model,
   if(cox) {
     # Cox PH regression:
     boot_res <- boot::censboot(data = cbind(survmatrix,
-                          model$model[,2:ncol(model$model)]),
-             statistic = switch(coef,
-                                exp = exp_reg_coef_cox,
-                                raw = reg_coef_cox),
-             F.surv = survival::survfit(model),
-             strata = strata,
-             sim = sim,
-             formula = model$formula,
-             R = R,
-             ...)
-  } else {
-  # AFT models:
-  boot_res <- boot::censboot(data = cbind(survmatrix,
-                        model$model[,2:ncol(model$model)]),
-           statistic = switch(coef,
-                              exp = exp_reg_coef_survreg,
-                              raw = reg_coef_survreg),
-           F.surv = survival::survfit(model),
-           strata = strata,
-           sim = sim,
-           formula = stats::formula(model$terms),
-           dist = model$dist,
-           R = R,
-           ...)
+                                            model$model[,2:ncol(model$model)]),
+                               statistic = switch(coef,
+                                                  exp = exp_reg_coef_cox,
+                                                  raw = reg_coef_cox),
+                               F.surv = survival::survfit(model),
+                               strata = strata,
+                               sim = sim,
+                               formula = model$formula,
+                               R = R,
+                               ...)
+  } else if(class(model)[1] == "survreg") {
+    # AFT models:
+    boot_res <- boot::censboot(data = cbind(survmatrix,
+                                            model$model[,2:ncol(model$model)]),
+                               statistic = switch(coef,
+                                                  exp = exp_reg_coef_survreg,
+                                                  raw = reg_coef_survreg),
+                               F.surv = survival::survfit(model),
+                               strata = strata,
+                               sim = sim,
+                               formula = stats::formula(model$terms),
+                               dist = model$dist,
+                               R = R,
+                               ...)
+  } else if(class(model)[1] == "psm") {
+    # AFT models:
+    boot_res <- boot::censboot(data = cbind(survmatrix,
+                                            model$model[,2:ncol(model$model)]),
+                               statistic = switch(coef,
+                                                  exp = exp_reg_coef_psm,
+                                                  raw = reg_coef_psm),
+                               F.surv = rms::psm(model),
+                               strata = strata,
+                               sim = sim,
+                               formula = stats::formula(model$terms),
+                               dist = model$dist,
+                               R = R,
+                               ...)
   }
 
   # Create data frame to store results in:
@@ -165,5 +188,3 @@ censboot_summary <- function(model,
   return(results)
 
 }
-
-

@@ -3,4 +3,6 @@
 export(boot.pval)
 export(boot_summary)
 export(censboot_summary)
+export(summary_to_flextable)
+export(summary_to_gt)
 importFrom(Rdpack,reprompt)

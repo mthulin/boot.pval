@@ -33,7 +33,7 @@ Summary tables with confidence intervals and p-values for the coefficients of re
 - Linear mixed models fitted using `lme4::lmer` or `lmerTest::lmer`,
 - Generalised linear mixed models fitted using `lme4::glmer`.
 - Cox PH regression models fitted using `survival::coxph` (using `censboot_summary`).
-- Accelerated failure time models fitted using `survival::survreg` (using `censboot_summary`).
+- Accelerated failure time models fitted using `survival::survreg` or `rms::psm` (using `censboot_summary`).
 - Any regression model such that: `residuals(object, type="pearson")` returns Pearson residuals; `fitted(object)` returns fitted values; `hatvalues(object)` returns the leverages, or perhaps the value 1 which will effectively ignore setting the hatvalues. In addition, the `data` argument should contain no missing values among the columns actually used in fitting the model.
 
 Here is an example with a linear regression model for the `mtcars` data:

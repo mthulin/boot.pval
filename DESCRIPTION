@@ -1,6 +1,6 @@
 Package: boot.pval
 Title: Bootstrap p-Values
-Version: 0.4.1
+Version: 0.5
 Authors@R: 
     person(given = "Måns",
            family = "Thulin",
@@ -10,7 +10,7 @@ Description: Computation of bootstrap p-values through inversion of confidence i
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 RdMacros: Rdpack
 Imports: 
     boot,
@@ -18,4 +18,7 @@ Imports:
     car,
     stats,
     lme4,
-    survival
+    survival,
+    rms,
+    gt,
+    flextable

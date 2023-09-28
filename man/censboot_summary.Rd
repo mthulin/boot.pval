@@ -18,9 +18,9 @@ censboot_summary(
 )
 }
 \arguments{
-\item{model}{An object fitted using "coxph" or "survreg".}
+\item{model}{An object fitted using "survival::coxph", "survival::survreg", or "rms::psm".}
 
-\item{type}{A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "perc" (the default), and "bca".}
+\item{type}{A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", and "perc" (the default).}
 
 \item{sim}{The method used for bootstrapping. See \code{?boot::censboot} for details. Currently only "ordinary" (case resampling) is supported.}
 
@@ -42,7 +42,7 @@ censboot_summary(
 A data frame containing coefficient estimates, bootstrap confidence intervals, and bootstrap p-values.
 }
 \description{
-Summaries for "coxph" and "survreg" objects, using the bootstrap for p-values and confidence intervals.
+Summaries for Cox proportional hazards and accelerated failure time models, using the bootstrap for p-values and confidence intervals.
 }
 \details{
 p-values can be computed by inverting the corresponding confidence intervals, as described in Section 12.2 of Thulin (2021) and Section 3.12 in Hall (1992). This function computes p-values in this way from "coxph" or "survreg" objects. The approach relies on the fact that:
@@ -69,6 +69,5 @@ censboot_summary(model, coef = "raw", R = 99)
 }
 \references{
 \insertRef{hall92}{boot.pval}
-
 \insertRef{thulin21}{boot.pval}
 }

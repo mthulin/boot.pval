@@ -1,3 +1,6 @@
+# boot.pval version 0.5
+Added support for AFT models fitted using rms::psm. Added functions for creating publication-ready summary tables using the gt and flextable packages. Removed support for BCa intervals for some regression models, as these are not longer supported by upstream packages.
+
 # boot.pval version 0.4.1
 Fixed a bug that caused boot_summary to throw an error when used with GLM's in R version >= 4.2.
 
