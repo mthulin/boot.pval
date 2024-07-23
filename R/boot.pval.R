@@ -51,7 +51,7 @@ boot.pval <- function(boot_res,
     if(is.null(pval_precision)) { pval_precision = 1/boot_res$R }
 
     # Create a sequence of alphas:
-    alpha_seq <- seq(1e-16, 1-1e-16, pval_precision)
+    alpha_seq <- seq(1e-15, 1-1e-15, pval_precision)
 
     # Compute the 1-alpha confidence intervals, and extract
     # their bounds:
