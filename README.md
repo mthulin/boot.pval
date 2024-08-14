@@ -16,7 +16,7 @@ install_github("mthulin/boot.pval")
 ```
 
 ## Background
-p-values can be computed by inverting the corresponding confidence intervals, as described in Section 12.2 of [Thulin (2021)](https://www.modernstatisticswithr.com/mathschap.html#confintequal) and Section 3.12 in [Hall (1992)](https://link.springer.com/book/10.1007/978-1-4612-4384-7). This package contains functions for computing bootstrap p-values in this way. The approach relies on the fact that:
+p-values can be computed by inverting the corresponding confidence intervals, as described in Section 14.2 of [Thulin (2024)](https://www.modernstatisticswithr.com/mathschap.html#confintequal) and Section 3.12 in [Hall (1992)](https://link.springer.com/book/10.1007/978-1-4612-4384-7). This package contains functions for computing bootstrap p-values in this way. The approach relies on the fact that:
 
 - The p-value of the two-sided test for the parameter theta is the smallest alpha such that theta is not contained in the corresponding 1-alpha confidence interval,
 - For a test of the parameter theta with significance level alpha, the set of values of theta that aren't rejected by the two-sided test (when used as the null hypothesis) is a 1-alpha confidence interval for theta.
@@ -36,7 +36,9 @@ Summary tables with confidence intervals and p-values for the coefficients of re
 - Accelerated failure time models fitted using `survival::survreg` or `rms::psm` (using `censboot_summary`).
 - Any regression model such that: `residuals(object, type="pearson")` returns Pearson residuals; `fitted(object)` returns fitted values; `hatvalues(object)` returns the leverages, or perhaps the value 1 which will effectively ignore setting the hatvalues. In addition, the `data` argument should contain no missing values among the columns actually used in fitting the model.
 
-Here is an example with a linear regression model for the `mtcars` data:
+A number of examples are available in Chapters 8 and 9 of [Modern Statistics with R](https://www.modernstatisticswithr.com/).
+
+Here is an simple example with a linear regression model for the `mtcars` data:
 
 ```
 # Bootstrap summary of a linear model for mtcars:
@@ -46,6 +48,16 @@ boot_summary(model)
 # Use 9999 bootstrap replicates and adjust p-values for
 # multiplicity using Holm's method:
 boot_summary(model, R = 9999, adjust.method = "holm")
+
+# Export results to a gt table:
+boot_summary(model, R = 9999) |>
+  summary_to_gt()
+
+# Export results to a Word document:
+library(flextable)
+boot_summary(model, R = 9999) |>
+  summary_to_flextable() |> 
+  save_as_docx(path = "my_table.docx")
 ```
 
 And a toy example for a generalised linear mixed model (using a small number of bootstrap repetitions):

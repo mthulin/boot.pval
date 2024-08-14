@@ -1,3 +1,6 @@
+# boot.pval version 0.6
+Improved performance when using BCa intervals. Updated the README with more examples.
+
 # boot.pval version 0.5
 Added support for AFT models fitted using rms::psm. Added functions for creating publication-ready summary tables using the gt and flextable packages. Removed support for BCa intervals for some regression models, as these are not longer supported by upstream packages.
 

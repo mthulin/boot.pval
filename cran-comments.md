@@ -1,8 +1,8 @@
 ## Updated package
-This is a new version of the package. Two critical bugs in censboot_summary() have been fixed. Additional options for boot_summary() have also been added.
+This is a new version of the package. The performance for BCa intervals have been improved, along with the documentation.
 
 ## Test environments
-* local Ubuntu 18.04 install, R 4.0.3
+* local Ubuntu 24.04 install, R 4.4.1
 * win-builder (devel and release)
 
 ## R CMD check results
