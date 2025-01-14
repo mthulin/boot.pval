@@ -1,9 +1,9 @@
 #' Summarising Regression Models Using the Bootstrap
 #'
-#' Summaries for regression models, including "lm", "glm", "glm.nb", nls", "rlm", "polr", and "merMod" ("lmer", "glmer") objects, using the bootstrap for p-values and confidence intervals.
+#' Summaries for regression models, including "lm", "glm", "glm.nb", "nls", "rlm", "polr", and "merMod" ("lmer", "glmer") objects, using the bootstrap for p-values and confidence intervals.
 #'
 #' @param model An object fitted using e.g. "lm", "glm", "glm.nb", "nls", "rlm", "polr", lmer", or "glmer".
-#' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", and "perc" (the default). "stud" is not supported for "lmer" and "glmer" models.
+#' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "bca", and "perc" (the default). "stud" and "bca" are not supported for "lmer" and "glmer" models.
 #' @param method The method used for bootstrapping. For "lm" and "nls" objects use either "residual" (for resampling of scaled and centred residuals, the default) or "case" (for case resampling). For "glm" objects, use "case" (the default). For "merMod" objects (mixed models) use either "parametric" (the default) or "semiparametric".
 #' @param conf.level The confidence level for the confidence intervals. The default is 0.95.
 #' @param R The number of bootstrap replicates. The default is 999.
@@ -13,7 +13,7 @@
 #' @param ... Additional arguments passed to \code{Boot} or \code{bootMer}, such as \code{parallel} for parallel computations. See \code{?car::Boot} and \code{?lme4::bootMer} for details.
 #'
 #' @return A data frame containing coefficient estimates, bootstrap confidence intervals, and bootstrap p-values.
-#' @details p-values can be computed by inverting the corresponding confidence intervals, as described in Section 12.2 of Thulin (2021) and Section 3.12 in Hall (1992). This function computes p-values for coefficients of regression models in this way. The approach relies on the fact that:
+#' @details p-values can be computed by inverting the corresponding confidence intervals, as described in Section 14.2 of Thulin (2024) and Section 3.12 in Hall (1992). This function computes p-values for coefficients of regression models in this way. The approach relies on the fact that:
 #' - the p-value of the two-sided test for the parameter theta is the smallest alpha such that theta is not contained in the corresponding 1-alpha confidence interval,
 #' - for a test of the parameter theta with significance level alpha, the set of values of theta that aren't rejected by the two-sided test (when used as the null hypothesis) is a 1-alpha confidence interval for theta.
 #'
@@ -41,6 +41,7 @@ boot_summary <- function(model,
                       adjust.method = "none",
                       ...)
 {
+
   # Bootstrap the regression model:
   # (Different functions are used depending on the type of model.)
   if(class(model)[1] %in% c("lmerMod", "glmerMod", "lmerModLmerTest"))
@@ -53,8 +54,11 @@ boot_summary <- function(model,
                               nsim = R,
                               ...)
   } else {
-    # Use car::Boot for other objects, including lm, glm, and nls objects:
+    # Use car::Boot for other objects, including lm, glm, and nls objects.
     if(is.null(method)) { if(class(model)[1] == "glm") { method <- "case" } else { method <- "residual" } }
+
+    # First, remove missing values from data, so that bootstrapping with car::Boot works:
+    if(!is.null(model$na.action)) { object <- model; model <- stats::update(model, data = object$model) }
 
     # Throw an error if the user attempts to use residual resampling with a GLM:
     if(class(model)[1] == "glm" & method == "residual") { stop("Residual resampling is not recommended for GLM's (see http://www.modernstatisticswithr.com/regression.html#bootstrap-confidence-intervals-1). Please use method = \"case\" instead.") }
@@ -82,7 +86,7 @@ boot_summary <- function(model,
   # Compute confidence intervals:
   for(i in 1:p)
   {
-      ci <- boot::boot.ci(boot_res, conf = conf.level, type = type, index = i, ...)
+      ci <- boot::boot.ci(boot_res, conf = conf.level, type = type, index = i)
       results[i, 2:3] <- switch(type,
                        norm = ci$normal[,2:3],
                        basic = ci$basic[,4:5],
@@ -98,21 +102,21 @@ boot_summary <- function(model,
   }
 
   # Compute p-values:
+  if(is.null(pval_precision)) { pval_precision <- 1/R }
   for(i in 1:p)
   {
     results[i, 4] <- boot.pval(boot_res,
                               type = type,
                               theta_null = 0,
                               pval_precision = pval_precision,
-                              index = i,
-                              ...)
+                              index = i)
   }
   if(adjust.method != "none") {
     results$`Adjusted p-value` <- round(stats::p.adjust(results[, 4], method = adjust.method), round(log10(R)))
   }
   # Round p-values:
-  results[,4] <- round(results[,4], round(log10(R)))
-
+  results$p.value[results$p.value != pval_precision] <- round(results$p.value[results$p.value != pval_precision], round(log10(R)))
+  results$p.value[results$p.value == pval_precision] <- paste0("<", round(pval_precision, round(log10(R))))
 
   return(results)
 }

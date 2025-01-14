@@ -4,7 +4,6 @@
 #'
 #' @param summary_table A table created using \code{boot_summary} or \code{censboot_summary}.
 #' @param decimals The number of decimals to print for estimates and confidence intervals. The default is 3.
-#' @param p_threshold p-values below this value will be printed as "<p_threshold", e.g. "<0.001". The default is 0.001.
 #' @param conf The text at the top of the confidence interval column in the gt table. The default is "95 % CI".
 #'
 #' @return A gt table.
@@ -15,15 +14,12 @@
 #' @export
 summary_to_gt <- function(summary_table,
                           decimals = 3,
-                          p_threshold = 0.001,
                           conf = "95 % CI")
 {
   summary_table |>
     gt::gt(rownames_to_stub = TRUE) |>
     gt::fmt_number(columns = c("Estimate", "Lower.bound", "Upper.bound"),
                decimals = decimals) |> # Display estimates and CI with 3 decimals
-    gt::sub_small_vals(columns = "p.value",
-                   threshold = p_threshold) |> # Show small p-values as "<0.001"
     gt::cols_merge(columns = c("Lower.bound", "Upper.bound"),
                pattern = "({1}, {2})") |> # Merge the CI bounds into a single column
     gt::cols_label(Lower.bound = conf,

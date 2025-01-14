@@ -4,19 +4,12 @@
 \alias{summary_to_gt}
 \title{Convert Bootstrap Summary Tables to gt Objects}
 \usage{
-summary_to_gt(
-  summary_table,
-  decimals = 3,
-  p_threshold = 0.001,
-  conf = "95 \% CI"
-)
+summary_to_gt(summary_table, decimals = 3, conf = "95 \% CI")
 }
 \arguments{
 \item{summary_table}{A table created using \code{boot_summary} or \code{censboot_summary}.}
 
 \item{decimals}{The number of decimals to print for estimates and confidence intervals. The default is 3.}
-
-\item{p_threshold}{p-values below this value will be printed as "<p_threshold", e.g. "<0.001". The default is 0.001.}
 
 \item{conf}{The text at the top of the confidence interval column in the gt table. The default is "95 \% CI".}
 }

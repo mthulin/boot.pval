@@ -1,6 +1,6 @@
 #' Compute Bootstrap p-values
 #'
-#' Compute bootstrap p-values through confidence interval inversion, as described in Hall (1992) and Thulin (2021).
+#' Compute bootstrap p-values through confidence interval inversion, as described in Hall (1992) and Thulin (2024).
 #'
 #' @param boot_res An object of class "boot" containing the output of a bootstrap calculation.
 #' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "perc" (the default), and "bca".
@@ -9,7 +9,7 @@
 #' @param ... Additional arguments passed to \code{boot.ci}.
 #'
 #' @return A bootstrap p-value.
-#' @details p-values can be computed by inverting the corresponding confidence intervals, as described in Section 12.2 of Thulin (2021) and Section 3.12 in Hall (1992). This function computes p-values in this way from "boot" objects. The approach relies on the fact that:
+#' @details p-values can be computed by inverting the corresponding confidence intervals, as described in Section 14.2 of Thulin (2024) and Section 3.12 in Hall (1992). This function computes p-values in this way from "boot" objects. The approach relies on the fact that:
 #' - the p-value of the two-sided test for the parameter theta is the smallest alpha such that theta is not contained in the corresponding 1-alpha confidence interval,
 #' - for a test of the parameter theta with significance level alpha, the set of values of theta that aren't rejected by the two-sided test (when used as the null hypothesis) is a 1-alpha confidence interval for theta.
 #' @importFrom Rdpack reprompt
@@ -51,7 +51,7 @@ boot.pval <- function(boot_res,
     if(is.null(pval_precision)) { pval_precision = 1/boot_res$R }
 
     # Create a sequence of alphas:
-    alpha_seq <- seq(1e-15, 1-1e-15, pval_precision)
+    alpha_seq <- seq(pval_precision, 1-pval_precision, pval_precision)
 
     # Compute the 1-alpha confidence intervals, and extract
     # their bounds:
