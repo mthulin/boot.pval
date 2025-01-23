@@ -40,7 +40,7 @@ A number of examples are available in Chapters 8 and 9 of [Modern Statistics wit
 
 Here are some simple examples with a linear regression model for the `mtcars` data:
 
-```
+```{r message=FALSE}
 # Bootstrap summary of a linear model for mtcars:
 model <- lm(mpg ~ hp + vs, data = mtcars)
 boot_summary(model)
@@ -52,7 +52,9 @@ boot_summary(model, R = 9999, adjust.method = "holm")
 # Export results to a gt table:
 boot_summary(model, R = 9999) |>
   summary_to_gt()
+```
 
+```{r eval = FALSE}
 # Export results to a Word document:
 library(flextable)
 boot_summary(model, R = 9999) |>
@@ -62,7 +64,7 @@ boot_summary(model, R = 9999) |>
 
 And a toy example for a generalised linear mixed model (using a small number of bootstrap repetitions):
 
-```
+```{r eval = FALSE}
 library(lme4)
 model <- glmer(TICKS ~ YEAR + (1|LOCATION),
            data = grouseticks, family = poisson)
@@ -70,18 +72,25 @@ boot_summary(model, R = 99)
 ```
 
 ## Speeding up computations
-For complex models, speed can be greatly improved by using parallelisation. This is set using the `parallel` (available options are `"multicore"` and `"snow"`). The number of CPUs to use is set using `ncpus`.
+For complex models, speed can be greatly improved by using parallelisation. For `lmer` and `glmer` models, this is set using the `parallel` (available options are `"multicore"` and `"snow"`). The number of CPUs to use is set using `ncpus`.
 
-```
+```{r eval = FALSE}
 model <- glmer(TICKS ~ YEAR + (1|LOCATION),
            data = grouseticks, family = poisson)
 boot_summary(model, R = 999, parallel = "multicore", ncpus = 10)
 ```
 
+For other models, use `ncores`:
+
+```{r eval = FALSE}
+model <- lm(mpg ~ hp + vs, data = mtcars)
+boot_summary(model, R = 9999, ncores = 10)
+```
+
 ## Survival models
 Survival regression models should be fitted using the argument `model = TRUE`. A summary table can then be obtained using `censboot_summary`. By default, the table contains exponentiated coefficients (i.e. hazard ratios, in the case of a Cox PH model).
 
-```
+```{r message = FALSE}
 library(survival)
 # Weibull AFT model:
 model <- survreg(formula = Surv(time, status) ~ age + sex, data = lung,
@@ -98,10 +107,17 @@ censboot_summary(model)
 censboot_summary(model, coef = "raw")
 ```
 
+To speed up computations using parallelisation, use the `parallel` and `ncpus` arguments:
+
+```{r eval = FALSE}
+censboot_summary(model, parallel = "multicore", ncpus = 10)
+```
+
+
 ## Other hypothesis tests
 Bootstrap p-values for hypothesis tests based on `boot` objects can be obtained using the `boot.pval` function. The following examples are extensions of those given in the documentation for `boot::boot`:
 
-```
+```{r message = FALSE}
 # Hypothesis test for the city data
 # H0: ratio = 1.4
 library(boot)
