@@ -4,3 +4,7 @@
 ^CRAN-RELEASE$
 ^LICENSE\.md$
 ^CRAN-SUBMISSION$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
