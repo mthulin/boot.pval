@@ -1,4 +1,4 @@
-# boot.pval <img src="man/figures/bootpval_hex.png" align="right" width="350" />
+# boot.pval <img src="man/figures/logo.png" align="right" width="350" />
 This R package provides functions for computing bootstrap p-values based on `boot` objects, and convenience functions for bootstrap confidence intervals and p-values for various regression models.
 
 ## Installation
