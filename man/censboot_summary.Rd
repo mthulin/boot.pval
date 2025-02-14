@@ -20,7 +20,7 @@ censboot_summary(
 \arguments{
 \item{model}{An object fitted using "survival::coxph", "survival::survreg", or "rms::psm".}
 
-\item{type}{A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", and "perc" (the default).}
+\item{type}{A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", and "perc" (the default).}
 
 \item{sim}{The method used for bootstrapping. See \code{?boot::censboot} for details. Currently only "ordinary" (case resampling) is supported.}
 

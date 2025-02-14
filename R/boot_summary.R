@@ -3,7 +3,7 @@
 #' Summaries for regression models, including "lm", "glm", "glm.nb", "nls", "rlm", "polr", and "merMod" ("lmer", "glmer") objects, using the bootstrap for p-values and confidence intervals.
 #'
 #' @param model An object fitted using e.g. "lm", "glm", "glm.nb", "nls", "rlm", "polr", lmer", or "glmer".
-#' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "bca", and "perc" (the default). "stud" and "bca" are not supported for "lmer" and "glmer" models.
+#' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "bca", and "perc" (the default). "bca" is not supported for "lmer" and "glmer" models.
 #' @param method The method used for bootstrapping. For "lm" and "nls" objects use either "residual" (for resampling of scaled and centred residuals, the default) or "case" (for case resampling). For "glm" objects, use "case" (the default). For "merMod" objects (mixed models) use either "parametric" (the default) or "semiparametric".
 #' @param conf.level The confidence level for the confidence intervals. The default is 0.95.
 #' @param R The number of bootstrap replicates. The default is 999.
@@ -90,7 +90,6 @@ boot_summary <- function(model,
       results[i, 2:3] <- switch(type,
                        norm = ci$normal[,2:3],
                        basic = ci$basic[,4:5],
-                       stud = ci$student[,4:5],
                        perc = ci$percent[,4:5],
                        bca = ci$bca[,4:5])
   }

@@ -34,7 +34,7 @@ reg_coef_psm <- function(data, formula, dist) {
 #' Summaries for Cox proportional hazards and accelerated failure time models, using the bootstrap for p-values and confidence intervals.
 #'
 #' @param model An object fitted using "survival::coxph", "survival::survreg", or "rms::psm".
-#' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", and "perc" (the default).
+#' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", and "perc" (the default).
 #' @param sim The method used for bootstrapping. See \code{?boot::censboot} for details. Currently only "ordinary" (case resampling) is supported.
 #' @param strata The strata used in the calls to \code{survfit.} It can be a vector or a matrix with 2 columns. If it is a vector then it is assumed to be the strata for the survival distribution, and the censoring distribution is assumed to be the same for all observations. If it is a matrix then the first column is the strata for the survival distribution and the second is the strata for the censoring distribution. When \code{sim = "ordinary"}, only one set of strata is used to stratify the observations. This is taken to be the first column of \code{strata} when it is a matrix.
 #' @param coef A string specifying whether to use exponentiated coefficients in the summary table. Either "exp" (for exponentiated coefficients, i.e. hazard ratios in the case of a Cox PH model) or "raw" (for coefficients on their original scale). The default is "exp".
@@ -161,9 +161,7 @@ censboot_summary <- function(model,
     results[i, 2:3] <- switch(type,
                               norm = ci$normal[,2:3],
                               basic = ci$basic[,4:5],
-                              stud = ci$student[,4:5],
-                              perc = ci$percent[,4:5],
-                              bca = ci$bca[,4:5])
+                              perc = ci$percent[,4:5])
   }
 
   # Compute p-values:
