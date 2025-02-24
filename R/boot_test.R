@@ -33,6 +33,7 @@ t_stat_1samp <- function(data, i)
 #' @return A list with class \code{"boot.htest"})
 #' containing the following components:
 #'   \item{statistic}{the value of the t-statistic.}
+#'   \item{R}{the number of bootstrap replicates used.}
 #'   \item{p.value}{the bootstrap p-value for the test.}
 #'   \item{conf.int}{a bootstrap confidence interval for the mean appropriate to the
 #'     specified alternative hypothesis.}
@@ -185,6 +186,7 @@ boot_t_test.default <- function(x, y = NULL, alternative = c("two.sided", "less"
     names(mu) <- if(paired || !is.null(y)) "difference in means" else "mean"
     attr(cint,"conf.level") <- conf.level
     rval <- list(statistic = tstat, #parameter = df, # uncomment to make gtsummary::tbl_regression() work with output
+                 parameters = c(R = R),
                  p.value = pval,
                  conf.int = cint, estimate = estimate, null.value = mu,
                  alternative = alternative,

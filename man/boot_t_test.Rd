@@ -77,6 +77,7 @@ boot_t_test(x, ...)
 A list with class \code{"boot.htest"})
 containing the following components:
 \item{statistic}{the value of the t-statistic.}
+\item{R}{the number of bootstrap replicates used.}
 \item{p.value}{the bootstrap p-value for the test.}
 \item{conf.int}{a bootstrap confidence interval for the mean appropriate to the
 specified alternative hypothesis.}
