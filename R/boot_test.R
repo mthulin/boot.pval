@@ -54,13 +54,21 @@ t_stat_1samp <- function(data, i)
 #'  \insertRef{thulin21}{boot.pval}
 #' @examples
 #' # Generate example data:
+#' # x is the variable of interest
+#' # y is the grouping variable
 #' example_data <- data.frame(x = rnorm(40), y = rep(c(1,2), 20))
 #'
 #' # Two-sample (Welch) test:
 #' boot_t_test(x ~ y, data = example_data, R = 999)
 #'
+#' # Two-sample (Welch) test using the pipe:
+#' example_data |> boot_t_test(x ~ y, R = 999)
+#'
 #' # One-sample test:
 #' boot_t_test(example_data$x, R = 999)
+#'
+#' # One-sample test using the pipe:
+#' example_data |> boot_t_test(x ~ 1, R = 999)
 #'
 #' # Paired test:
 #' boot_t_test(example_data$x[example_data$y==1],
@@ -189,27 +197,59 @@ boot_t_test.default <- function(x, y = NULL, alternative = c("two.sided", "less"
 #' @export
 boot_t_test.formula <- function(formula, data, subset, na.action, ...)
 {
-    if(missing(formula)
-       || (length(formula) != 3L)
-       || (length(attr(stats::terms(formula[-2L]), "term.labels")) != 1L))
+    if (missing(formula) || (length(formula) != 3L))
+      stop("'formula' missing or incorrect")
+    if ("paired" %in% ...names())
+      stop("cannot use 'paired' in formula method")
+    oneSampleOrPaired <- FALSE
+    if (length(attr(stats::terms(formula[-2L]), "term.labels")) != 1L)
+      if (formula[[3L]] == 1L)
+        oneSampleOrPaired <- TRUE
+    else
       stop("'formula' missing or incorrect")
     m <- match.call(expand.dots = FALSE)
-    if(is.matrix(eval(m$data, parent.frame())))
+    if (is.matrix(eval(m$data, parent.frame())))
       m$data <- as.data.frame(data)
     ## need stats:: for non-standard evaluation
     m[[1L]] <- quote(stats::model.frame)
     m$... <- NULL
     mf <- eval(m, parent.frame())
-    DNAME <- paste(names(mf), collapse = " by ")
+    DNAME <- paste(names(mf), collapse = " by ") # works in all cases
     names(mf) <- NULL
     response <- attr(attr(mf, "terms"), "response")
-    g <- factor(mf[[-response]])
-    if(nlevels(g) != 2L)
-      stop("grouping factor must have exactly 2 levels")
-    DATA <- stats::setNames(split(mf[[response]], g), c("x", "y"))
-    y <- do.call("boot_t_test", c(DATA, list(...)))
+    if (! oneSampleOrPaired) {
+      g <- factor(mf[[-response]])
+      if (nlevels(g) != 2L)
+        stop("grouping factor must have exactly 2 levels")
+      DATA <- split(mf[[response]], g)
+      ## Call the default method.
+      y <- boot_t_test(x = DATA[[1L]], y = DATA[[2L]], ...)
+      if (length(y$estimate) == 2L) {
+        names(y$estimate) <- paste("mean in group", levels(g))
+        names(y$null.value) <-
+          paste("difference in means between",
+                paste("group", levels(g), collapse = " and "))
+      }
+    }
+    else { # 1-sample and paired tests
+      respVar <- mf[[response]]
+      if (inherits(respVar, "Pair")) {
+        ## Call the default method.
+        y <- boot_t_test(x = respVar[, 1L], y = respVar[, 2L],
+                    paired = TRUE, ...)
+      }
+      else {
+        ## Call the default method.
+        y <- boot_t_test(x = respVar, ...)
+      }
+    }
     y$data.name <- DNAME
-    if(length(y$estimate) == 2L)
-      names(y$estimate) <- paste("mean in group", levels(g))
     y
+}
+
+#' @rdname boot_t_test
+#' @export
+boot_t_test.data.frame <- function(x, formula, ...)
+{
+    boot_t_test.formula(formula, x, ...)
 }

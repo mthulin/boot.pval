@@ -4,6 +4,7 @@
 \alias{boot_t_test}
 \alias{boot_t_test.default}
 \alias{boot_t_test.formula}
+\alias{boot_t_test.data.frame}
 \title{Bootstrap t-Test}
 \usage{
 boot_t_test(x, ...)
@@ -22,6 +23,8 @@ boot_t_test(x, ...)
 )
 
 \method{boot_t_test}{formula}(formula, data, subset, na.action, ...)
+
+\method{boot_t_test}{data.frame}(x, formula, ...)
 }
 \arguments{
 \item{x}{a (non-empty) numeric vector of data values.}
@@ -103,13 +106,21 @@ Consequently, the p-value will be consistent with the confidence interval, in th
 }
 \examples{
 # Generate example data:
+# x is the variable of interest
+# y is the grouping variable
 example_data <- data.frame(x = rnorm(40), y = rep(c(1,2), 20))
 
 # Two-sample (Welch) test:
 boot_t_test(x ~ y, data = example_data, R = 999)
 
+# Two-sample (Welch) test using the pipe:
+example_data |> boot_t_test(x ~ y, R = 999)
+
 # One-sample test:
 boot_t_test(example_data$x, R = 999)
+
+# One-sample test using the pipe:
+example_data |> boot_t_test(x ~ 1, R = 999)
 
 # Paired test:
 boot_t_test(example_data$x[example_data$y==1],
