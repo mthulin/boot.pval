@@ -75,6 +75,12 @@ t_stat_1samp <- function(data, i)
 #' boot_t_test(example_data$x[example_data$y==1],
 #'             example_data$x[example_data$y==2],
 #'             paired = TRUE, R = 999)
+#'
+#' # Paired test using the pipe (after reshaping to wide format):
+#' example_data$id <- rep(1:20, rep(2, 20))
+#' example_data2 <- reshape(example_data, direction = "wide",
+#'                          idvar = "id", timevar = "y")
+#' example_data2 |> boot_t_test(Pair(x.1, x.2) ~ 1)
 #' @export
 boot_t_test <- function(x, ...) UseMethod("boot_t_test")
 
