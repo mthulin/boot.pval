@@ -3,6 +3,7 @@
 S3method(boot_t_test,data.frame)
 S3method(boot_t_test,default)
 S3method(boot_t_test,formula)
+S3method(boot_t_test,matrix)
 export(boot.pval)
 export(boot_summary)
 export(boot_t_test)

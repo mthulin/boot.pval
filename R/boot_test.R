@@ -255,3 +255,10 @@ boot_t_test.data.frame <- function(x, formula, ...)
 {
     boot_t_test.formula(formula, x, ...)
 }
+
+#' @rdname boot_t_test
+#' @export
+boot_t_test.matrix <- function(x, formula, ...)
+{
+  boot_t_test.formula(formula, x, ...)
+}

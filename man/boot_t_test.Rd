@@ -5,6 +5,7 @@
 \alias{boot_t_test.default}
 \alias{boot_t_test.formula}
 \alias{boot_t_test.data.frame}
+\alias{boot_t_test.matrix}
 \title{Bootstrap t-Test}
 \usage{
 boot_t_test(x, ...)
@@ -25,6 +26,8 @@ boot_t_test(x, ...)
 \method{boot_t_test}{formula}(formula, data, subset, na.action, ...)
 
 \method{boot_t_test}{data.frame}(x, formula, ...)
+
+\method{boot_t_test}{matrix}(x, formula, ...)
 }
 \arguments{
 \item{x}{a (non-empty) numeric vector of data values.}
