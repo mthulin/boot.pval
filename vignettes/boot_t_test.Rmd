@@ -1,0 +1,55 @@
+---
+title: "Bootstrap t-tests"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{boot_t_test}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Background
+Traditional versions of Student's t-test rely on the assumption of normality. 
+
+
+```{r setup}
+library(boot.pval)
+```
+
+## Two-sample tests
+
+```{r message=FALSE}
+boot_t_test(extra ~ group, data = sleep)
+```
+
+```{r message=FALSE}
+sleep |> boot_t_test(extra ~ group)
+```
+
+Paired samples:
+```{r message=FALSE}
+# Reshape to wide format:
+sleep2 <- reshape(sleep, direction = "wide",
+                  idvar = "ID", timevar = "group")
+
+# Traditional interface:
+boot_t_test(sleep2$extra.1, sleep2$extra.2, paired = TRUE)
+
+# Using pipes:
+sleep2 |> boot_t_test(Pair(extra.1, extra.2) ~ 1)
+```
+
+## One-sample tests
+```{r message=FALSE}
+# Traditional interface:
+boot_t_test(sleep$extra)
+
+# Using pipes:
+sleep |> boot_t_test(extra ~ 1)
+```
