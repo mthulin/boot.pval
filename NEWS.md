@@ -1,5 +1,5 @@
 # boot.pval development version
-Added support for one-sided tests. Added the boot_t_test and boot_median_test functions for carrying out bootstrap tests of location. Updated documentation for boot_summary and censboot_summary to not mention studentized intervals (which aren't supported by upstream packages). 
+Added support for one-sided tests. Added the boot_t_test and boot_median_test functions for carrying out bootstrap tests of location. Updated documentation for boot_summary and censboot_summary to not mention studentized intervals (which aren't supported by upstream packages). Added a new vignette.
 
 # boot.pval version 0.6
 Added automatic handling of missing values, so that these don't have to be removed manually from the data prior to using boot_summary(). Added support for BCa intervals again, and improved performance for these intervals. Improved presentation of p-values in regression models. Added a vignette.
