@@ -76,7 +76,7 @@ model <- glmer(TICKS ~ YEAR + (1|LOCATION),
 boot_summary(model, R = 99)
 ```
 
-## Speeding up computations
+### Speeding up computations
 For complex models, speed can be greatly improved by using parallelisation. For `lmer` and `glmer` models, this is set using the `parallel` (available options are `"multicore"` and `"snow"`). The number of CPUs to use is set using `ncpus`.
 
 ```r
@@ -92,7 +92,7 @@ model <- lm(mpg ~ hp + vs, data = mtcars)
 boot_summary(model, R = 9999, ncores = 10)
 ```
 
-## Survival models
+### Survival models
 Survival regression models should be fitted using the argument `model = TRUE`. A summary table can then be obtained using `censboot_summary`. By default, the table contains exponentiated coefficients (i.e. hazard ratios, in the case of a Cox PH model).
 
 ```r
@@ -118,7 +118,7 @@ To speed up computations using parallelisation, use the `parallel` and `ncpus` a
 censboot_summary(model, parallel = "multicore", ncpus = 10)
 ```
 
-## Tests of locations
+## Tests of location
 Traditional versions of Student's t-test (`t.test` in R) rely on the assumption of normality. For non-normal data, this can lead to misleading p-values and confidence intervals. In such cases, it is often recommended to use the Wilcoxon-Mann-Whitney test (`wilcox.test` in R) instead. Despite being described as a test of location, or a test for differences of medians, the Wilcoxon-Mann-Whitney test is actually a test of equivalence of distributions, unless strict assumptions are met. In addition, `wilcox.test` does not provide a confidence interval for the difference of the medians.
 
 In many cases, a better option is to use a bootstrap t-test (for inference about means) or a bootstrap median test (for inference about medians). These can be used without the normality assumption, and will provide confidence intervals for the parameters of interest.
