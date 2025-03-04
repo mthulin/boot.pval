@@ -53,6 +53,7 @@ t_stat_1samp <- function(data, i)
 #' @references
 #'  \insertRef{hall92}{boot.pval}
 #'  \insertRef{thulin21}{boot.pval}
+#' @seealso [boot_median_test()] for bootstrap tests for medians, [boot_summary()] for bootstrap tests for coefficients of regression models.
 #' @examples
 #' # Generate example data:
 #' # x is the variable of interest
@@ -366,6 +367,7 @@ median_stat_1samp <- function(data, i)
 #' @references
 #'  \insertRef{hall92}{boot.pval}
 #'  \insertRef{thulin21}{boot.pval}
+#' @seealso [boot_t_test()] for bootstrap t-tests, [boot_summary()] for bootstrap tests for coefficients of regression models.
 #' @examples
 #' \dontrun{
 #' # Generate example data:
@@ -455,7 +457,9 @@ boot_median_test.default <- function(x, y = NULL, alternative = c("two.sided", "
     method <- if(paired) "Paired Bootstrap Median Test" else "One Sample Bootstrap Median Test"
     estimate <-
       stats::setNames(mx, if(paired)"median of the differences" else "median of x")
-    boot_res <- boot::boot(x, median_stat_1samp, R = R, stype = "i", ...)
+    if(type %in% c("stud", "bca")) { boot_res <- boot::boot(x, median_stat_1samp, R = R, stype = "i", ...) } else {
+      boot_res <- boot::boot(x, median_1samp, R = R, stype = "i", ...)
+    }
   } else {
     ny <- length(y)
     if(nx < 1 || (!var.equal && nx < 2))
@@ -480,7 +484,9 @@ boot_median_test.default <- function(x, y = NULL, alternative = c("two.sided", "
       stop("data are essentially constant")
 
     data <- data.frame(x = c(x, y), group = rep(c(1, 2), c(length(x), length(y))))
-    boot_res <- boot::boot(data, median_stat, R = R, stype = "i", strata = data[, 2], ...)
+    if(type %in% c("stud", "bca")) { boot_res <- boot::boot(data, median_stat, R = R, stype = "i", strata = data[, 2], ...) } else {
+      boot_res <- boot::boot(data, median_diff, R = R, stype = "i", strata = data[, 2], ...)
+    }
     tstat <- (mx - my - mu)
   }
   if (alternative == "less") {

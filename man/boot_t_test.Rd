@@ -145,3 +145,6 @@ example_data2 |> boot_t_test(Pair(x.1, x.2) ~ 1)
 \insertRef{hall92}{boot.pval}
 \insertRef{thulin21}{boot.pval}
 }
+\seealso{
+\code{\link[=boot_median_test]{boot_median_test()}} for bootstrap tests for medians, \code{\link[=boot_summary]{boot_summary()}} for bootstrap tests for coefficients of regression models.
+}

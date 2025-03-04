@@ -63,3 +63,6 @@ boot_summary(model, R = 99, adjust.method = "holm")
 \insertRef{hall92}{boot.pval}
 \insertRef{thulin21}{boot.pval}
 }
+\seealso{
+\code{\link[=boot_t_test]{boot_t_test()}} for bootstrap t-tests, \code{\link[=boot_median_test]{boot_median_test()}} for bootstrap tests for medians.
+}

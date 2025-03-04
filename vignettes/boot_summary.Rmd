@@ -52,10 +52,15 @@ boot_summary(model)
 # multiplicity using Holm's method:
 boot_summary(model, R = 9999, adjust.method = "holm")
 
+# Use case resampling instead of residual resampling:
+boot_summary(model, method = "case")
+
 # Export results to a gt table:
 boot_summary(model, R = 9999) |>
   summary_to_gt()
 ```
+
+See Davison and Hinkley (1997) for details about residual resampling (the default) and case resampling.
 
 ```{r eval = FALSE}
 # Export results to a Word document:
@@ -145,3 +150,8 @@ grav1.boot <- boot(grav1, diff.means, R = 999, stype = "f",
                    strata = grav1[ ,2])
 boot.pval(grav1.boot, type = "stud", theta_null = 0)
 ```
+
+## Reference
+* Davison, A.C. and Hinkley, D.V. (1997) _Bootstrap Methods and Their Application_. Cambridge University Press.
+
+

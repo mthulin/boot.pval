@@ -17,7 +17,8 @@
 #' @references
 #'  \insertRef{hall92}{boot.pval}
 #'
-#'  \insertRef{thulin21}{boot.pval}
+#'  \insertRef{thulin21}{boot.pval}'
+#' @seealso [boot_t_test()] for bootstrap t-tests, [boot_median_test()] for bootstrap tests for medians, [boot_summary()] for bootstrap tests for coefficients of regression models.
 #' @examples
 #' # Hypothesis test for the city data
 #' # H0: ratio = 1.4

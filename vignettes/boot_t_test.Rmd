@@ -1,5 +1,5 @@
 ---
-title: "Bootstrap t-tests"
+title: "Bootstrap tests for location"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{boot_t_test}
@@ -15,25 +15,48 @@ knitr::opts_chunk$set(
 ```
 
 ## Background
-Traditional versions of Student's t-test rely on the assumption of normality. 
+Traditional versions of Student's t-test (`t.test` in R) rely on the assumption of normality. For non-normal data, this can lead to misleading p-values and confidence intervals. In such cases, it is often recommended to use the Wilcoxon-Mann-Whitney test (`wilcox.test` in R) instead. Despite being described as a test of location, or a test for differences of medians, the Wilcoxon-Mann-Whitney test is actually a test of equivalence of distributions, unless strict assumptions are met. In addition, `wilcox.test` does not provide a confidence interval for the difference of the medians.
+
+In many cases, a better option is to use a bootstrap t-test (for inference about means) or a bootstrap median test (for inference about medians). These can be used without the normality assumption, and will provide confidence intervals for the parameters of interest.
+
+This vignette describes how to perform bootstrap t-tests and bootstrap median tests.
 
 
 ```{r setup}
 library(boot.pval)
 ```
 
-## Two-sample tests
+## Two-sample bootstrap t-tests
+To illustrate the use of bootstrap t-tests, we'll use the classic `sleep` data, which "show the effect of two soporific drugs (increase in hours of sleep compared to control) on 10 patients" (see `?sleep` for details).
+
+We wish to test whether the mean value of the `extra` (increase in hours of sleep) variable differs between the two groups described by the `group` variable. The syntax for this is identical to that for `t.test`:
 
 ```{r message=FALSE}
 boot_t_test(extra ~ group, data = sleep)
 ```
 
-```{r message=FALSE}
+If you prefer, you can also use the `|>` pipe as follows:
+
+```{r message=FALSE, eval = FALSE}
 sleep |> boot_t_test(extra ~ group)
 ```
 
-Paired samples:
-```{r message=FALSE}
+By default, the confidence interval and p-value are based on the studentized bootstrap confidence interval. Other options available are normal, basic, percentile and BCa intervals; see Chapter 5 of Davison and Hinkley (1997) for details. You can choose the method used using the `type` argument.
+
+```{r message=FALSE, eval = FALSE}
+sleep |> boot_t_test(extra ~ group, type = "perc") # Percentile interval
+sleep |> boot_t_test(extra ~ group, type = "bca") # BCa interval
+```
+
+You can control the number of bootstrap replicates used (argument `R`; the default is 9999) or the direction of the alternative hypothesis (argument `alternative`):
+
+```{r message=FALSE, eval = FALSE}
+sleep |> boot_t_test(extra ~ group, R = 999, alternative = "less")
+```
+
+In this case, the data is actually paired, so it would make sense to perform a paired bootstrap t-test instead. We reshape the data to a wide format, so that the first measurements ends up in the variable `extra.1`, and the second measurement ends up in the variable `extra.2`. We can then run the test as follows:
+
+```{r message=FALSE, eval = FALSE}
 # Reshape to wide format:
 sleep2 <- reshape(sleep, direction = "wide",
                   idvar = "ID", timevar = "group")
@@ -45,11 +68,28 @@ boot_t_test(sleep2$extra.1, sleep2$extra.2, paired = TRUE)
 sleep2 |> boot_t_test(Pair(extra.1, extra.2) ~ 1)
 ```
 
-## One-sample tests
-```{r message=FALSE}
+## One-sample bootstrap t-tests
+For one sample bootstrap t-tests, we only need to provide a single vector containing the measurements. We can also specify the null value of the mean (argument `mu`):
+
+```{r message=FALSE, eval = FALSE}
 # Traditional interface:
-boot_t_test(sleep$extra)
+boot_t_test(sleep$extra, mu = 1)
 
 # Using pipes:
-sleep |> boot_t_test(extra ~ 1)
+sleep |> boot_t_test(extra ~ 1, mu = 1)
 ```
+
+## Bootstrap median tests
+Running a bootstrap median test with the `boot_median_test` function is completely analogously to running a bootstrap t-test. The only difference is under the hood - medians are used instead of means. Because the studentized and BCa versions of this test use an inner bootstrap to estimate the variance of the statistic, these takes longer to run than other tests presented here.
+
+```{r message=FALSE, eval = FALSE}
+boot_median_test(extra ~ group, data = sleep, type = "perc")
+
+sleep |> boot_median_test(extra ~ group, R = 999, alternative = "less")
+
+boot_median_test(sleep$extra, mu = 1)
+```
+
+
+## Reference
+* Davison, A.C. and Hinkley, D.V. (1997) _Bootstrap Methods and Their Application_. Cambridge University Press.
