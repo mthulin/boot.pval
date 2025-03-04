@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">boot.pval</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.2000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/boot_summary.html">An introduction to bootstrap p-values for regression models using the boot.pval package</a></li>
+    <li><a class="dropdown-item" href="../articles/boot_t_test.html">Bootstrap tests for location</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -138,26 +139,33 @@ R</a>.</p>
 <span><span class="co">#&gt; hp          -0.05453412 -0.08217782  -0.0256178   4e-04           0.0008</span></span>
 <span><span class="co">#&gt; vs           2.57622314 -1.42802199   6.4742569  0.2012           0.2012</span></span>
 <span></span>
+<span><span class="co"># Use case resampling instead of residual resampling:</span></span>
+<span><span class="fu"><a href="../reference/boot_summary.html">boot_summary</a></span><span class="op">(</span><span class="va">model</span>, method <span class="op">=</span> <span class="st">"case"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                Estimate Lower.bound Upper.bound p.value</span></span>
+<span><span class="co">#&gt; (Intercept) 26.96300111  21.5588473 35.07007975  &lt;0.001</span></span>
+<span><span class="co">#&gt; hp          -0.05453412  -0.1024433 -0.02828226  &lt;0.001</span></span>
+<span><span class="co">#&gt; vs           2.57622314  -1.4885872  6.50911625   0.256</span></span>
+<span></span>
 <span><span class="co"># Export results to a gt table:</span></span>
 <span><span class="fu"><a href="../reference/boot_summary.html">boot_summary</a></span><span class="op">(</span><span class="va">model</span>, R <span class="op">=</span> <span class="fl">9999</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/summary_to_gt.html">summary_to_gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div id="diaiokydct" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#diaiokydct table {
+<div id="kxlhpbxmhx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#kxlhpbxmhx table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#diaiokydct thead, #diaiokydct tbody, #diaiokydct tfoot, #diaiokydct tr, #diaiokydct td, #diaiokydct th {
+#kxlhpbxmhx thead, #kxlhpbxmhx tbody, #kxlhpbxmhx tfoot, #kxlhpbxmhx tr, #kxlhpbxmhx td, #kxlhpbxmhx th {
   border-style: none;
 }
 
-#diaiokydct p {
+#kxlhpbxmhx p {
   margin: 0;
   padding: 0;
 }
 
-#diaiokydct .gt_table {
+#kxlhpbxmhx .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -183,12 +191,12 @@ R</a>.</p>
   border-left-color: #D3D3D3;
 }
 
-#diaiokydct .gt_caption {
+#kxlhpbxmhx .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#diaiokydct .gt_title {
+#kxlhpbxmhx .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -200,7 +208,7 @@ R</a>.</p>
   border-bottom-width: 0;
 }
 
-#diaiokydct .gt_subtitle {
+#kxlhpbxmhx .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -212,7 +220,7 @@ R</a>.</p>
   border-top-width: 0;
 }
 
-#diaiokydct .gt_heading {
+#kxlhpbxmhx .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -224,13 +232,13 @@ R</a>.</p>
   border-right-color: #D3D3D3;
 }
 
-#diaiokydct .gt_bottom_border {
+#kxlhpbxmhx .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#diaiokydct .gt_col_headings {
+#kxlhpbxmhx .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -245,7 +253,7 @@ R</a>.</p>
   border-right-color: #D3D3D3;
 }
 
-#diaiokydct .gt_col_heading {
+#kxlhpbxmhx .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -265,7 +273,7 @@ R</a>.</p>
   overflow-x: hidden;
 }
 
-#diaiokydct .gt_column_spanner_outer {
+#kxlhpbxmhx .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -277,15 +285,15 @@ R</a>.</p>
   padding-right: 4px;
 }
 
-#diaiokydct .gt_column_spanner_outer:first-child {
+#kxlhpbxmhx .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#diaiokydct .gt_column_spanner_outer:last-child {
+#kxlhpbxmhx .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#diaiokydct .gt_column_spanner {
+#kxlhpbxmhx .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -297,11 +305,11 @@ R</a>.</p>
   width: 100%;
 }
 
-#diaiokydct .gt_spanner_row {
+#kxlhpbxmhx .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#diaiokydct .gt_group_heading {
+#kxlhpbxmhx .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -327,7 +335,7 @@ R</a>.</p>
   text-align: left;
 }
 
-#diaiokydct .gt_empty_group_heading {
+#kxlhpbxmhx .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -342,15 +350,15 @@ R</a>.</p>
   vertical-align: middle;
 }
 
-#diaiokydct .gt_from_md > :first-child {
+#kxlhpbxmhx .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#diaiokydct .gt_from_md > :last-child {
+#kxlhpbxmhx .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#diaiokydct .gt_row {
+#kxlhpbxmhx .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -369,7 +377,7 @@ R</a>.</p>
   overflow-x: hidden;
 }
 
-#diaiokydct .gt_stub {
+#kxlhpbxmhx .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -382,7 +390,7 @@ R</a>.</p>
   padding-right: 5px;
 }
 
-#diaiokydct .gt_stub_row_group {
+#kxlhpbxmhx .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -396,15 +404,15 @@ R</a>.</p>
   vertical-align: top;
 }
 
-#diaiokydct .gt_row_group_first td {
+#kxlhpbxmhx .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#diaiokydct .gt_row_group_first th {
+#kxlhpbxmhx .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#diaiokydct .gt_summary_row {
+#kxlhpbxmhx .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -414,16 +422,16 @@ R</a>.</p>
   padding-right: 5px;
 }
 
-#diaiokydct .gt_first_summary_row {
+#kxlhpbxmhx .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#diaiokydct .gt_first_summary_row.thick {
+#kxlhpbxmhx .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#diaiokydct .gt_last_summary_row {
+#kxlhpbxmhx .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -433,7 +441,7 @@ R</a>.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#diaiokydct .gt_grand_summary_row {
+#kxlhpbxmhx .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -443,7 +451,7 @@ R</a>.</p>
   padding-right: 5px;
 }
 
-#diaiokydct .gt_first_grand_summary_row {
+#kxlhpbxmhx .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -453,7 +461,7 @@ R</a>.</p>
   border-top-color: #D3D3D3;
 }
 
-#diaiokydct .gt_last_grand_summary_row_top {
+#kxlhpbxmhx .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -463,11 +471,11 @@ R</a>.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#diaiokydct .gt_striped {
+#kxlhpbxmhx .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#diaiokydct .gt_table_body {
+#kxlhpbxmhx .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -476,7 +484,7 @@ R</a>.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#diaiokydct .gt_footnotes {
+#kxlhpbxmhx .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -490,7 +498,7 @@ R</a>.</p>
   border-right-color: #D3D3D3;
 }
 
-#diaiokydct .gt_footnote {
+#kxlhpbxmhx .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -499,7 +507,7 @@ R</a>.</p>
   padding-right: 5px;
 }
 
-#diaiokydct .gt_sourcenotes {
+#kxlhpbxmhx .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -513,7 +521,7 @@ R</a>.</p>
   border-right-color: #D3D3D3;
 }
 
-#diaiokydct .gt_sourcenote {
+#kxlhpbxmhx .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -521,72 +529,72 @@ R</a>.</p>
   padding-right: 5px;
 }
 
-#diaiokydct .gt_left {
+#kxlhpbxmhx .gt_left {
   text-align: left;
 }
 
-#diaiokydct .gt_center {
+#kxlhpbxmhx .gt_center {
   text-align: center;
 }
 
-#diaiokydct .gt_right {
+#kxlhpbxmhx .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#diaiokydct .gt_font_normal {
+#kxlhpbxmhx .gt_font_normal {
   font-weight: normal;
 }
 
-#diaiokydct .gt_font_bold {
+#kxlhpbxmhx .gt_font_bold {
   font-weight: bold;
 }
 
-#diaiokydct .gt_font_italic {
+#kxlhpbxmhx .gt_font_italic {
   font-style: italic;
 }
 
-#diaiokydct .gt_super {
+#kxlhpbxmhx .gt_super {
   font-size: 65%;
 }
 
-#diaiokydct .gt_footnote_marks {
+#kxlhpbxmhx .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#diaiokydct .gt_asterisk {
+#kxlhpbxmhx .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#diaiokydct .gt_indent_1 {
+#kxlhpbxmhx .gt_indent_1 {
   text-indent: 5px;
 }
 
-#diaiokydct .gt_indent_2 {
+#kxlhpbxmhx .gt_indent_2 {
   text-indent: 10px;
 }
 
-#diaiokydct .gt_indent_3 {
+#kxlhpbxmhx .gt_indent_3 {
   text-indent: 15px;
 }
 
-#diaiokydct .gt_indent_4 {
+#kxlhpbxmhx .gt_indent_4 {
   text-indent: 20px;
 }
 
-#diaiokydct .gt_indent_5 {
+#kxlhpbxmhx .gt_indent_5 {
   text-indent: 25px;
 }
 
-#diaiokydct .katex-display {
+#kxlhpbxmhx .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#diaiokydct div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#kxlhpbxmhx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -601,24 +609,26 @@ R</a>.</p>
 <tr>
 <th id="stub_1_1" scope="row" class="gt_row gt_left gt_stub">(Intercept)</th>
 <td headers="stub_1_1 Estimate" class="gt_row gt_right">26.963</td>
-<td headers="stub_1_1 Lower.bound" class="gt_row gt_right">(21.306, 32.759)</td>
+<td headers="stub_1_1 Lower.bound" class="gt_row gt_right">(21.397, 32.735)</td>
 <td headers="stub_1_1 p.value" class="gt_row gt_left">&lt;1e-04</td>
 </tr>
 <tr>
 <th id="stub_1_2" scope="row" class="gt_row gt_left gt_stub">hp</th>
 <td headers="stub_1_2 Estimate" class="gt_row gt_right">−0.055</td>
 <td headers="stub_1_2 Lower.bound" class="gt_row gt_right">(−0.083, −0.026)</td>
-<td headers="stub_1_2 p.value" class="gt_row gt_left">5e-04</td>
+<td headers="stub_1_2 p.value" class="gt_row gt_left">&lt;1e-04</td>
 </tr>
 <tr>
 <th id="stub_1_3" scope="row" class="gt_row gt_left gt_stub">vs</th>
 <td headers="stub_1_3 Estimate" class="gt_row gt_right">2.576</td>
-<td headers="stub_1_3 Lower.bound" class="gt_row gt_right">(−1.441, 6.463)</td>
-<td headers="stub_1_3 p.value" class="gt_row gt_left">0.2111</td>
+<td headers="stub_1_3 Lower.bound" class="gt_row gt_right">(−1.408, 6.325)</td>
+<td headers="stub_1_3 p.value" class="gt_row gt_left">0.1987</td>
 </tr>
 </tbody>
 </table>
 </div>
+<p>See Davison and Hinkley (1997) for details about residual resampling
+(the default) and case resampling.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Export results to a Word document:</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ardata-fr.github.io/flextable-book/" class="external-link">flextable</a></span><span class="op">)</span></span>
@@ -667,9 +677,9 @@ model).</p>
 <span><span class="fu"><a href="../reference/censboot_summary.html">censboot_summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Using exponentiated coefficients.</span></span>
 <span><span class="co">#&gt;                Estimate Lower.bound Upper.bound p.value</span></span>
-<span><span class="co">#&gt; (Intercept) 531.0483429 204.9676111 1461.946679  &lt;0.001</span></span>
-<span><span class="co">#&gt; age           0.9878178   0.9730908    1.001803   0.092</span></span>
-<span><span class="co">#&gt; sex           1.4653368   1.1570585    1.895106   0.003</span></span>
+<span><span class="co">#&gt; (Intercept) 531.0483429  214.499098 1343.961015  &lt;0.001</span></span>
+<span><span class="co">#&gt; age           0.9878178    0.973827    1.001999   0.089</span></span>
+<span><span class="co">#&gt; sex           1.4653368    1.168961    1.875647   0.003</span></span>
 <span></span>
 <span><span class="co"># Cox PH model:</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">coxph</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">lung</span>,</span>
@@ -678,14 +688,14 @@ model).</p>
 <span><span class="fu"><a href="../reference/censboot_summary.html">censboot_summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Using exponentiated coefficients.</span></span>
 <span><span class="co">#&gt;     Estimate Lower.bound Upper.bound p.value</span></span>
-<span><span class="co">#&gt; age 1.017191   0.9983402   1.0361095   0.076</span></span>
-<span><span class="co">#&gt; sex 0.598566   0.4226231   0.8210418   0.003</span></span>
+<span><span class="co">#&gt; age 1.017191   0.9996458    1.035802   0.054</span></span>
+<span><span class="co">#&gt; sex 0.598566   0.4303380    0.815483  &lt;0.001</span></span>
 <span><span class="co"># Table with original coefficients:</span></span>
 <span><span class="fu"><a href="../reference/censboot_summary.html">censboot_summary</a></span><span class="op">(</span><span class="va">model</span>, coef <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Using raw coefficients.</span></span>
 <span><span class="co">#&gt;        Estimate  Lower.bound Upper.bound p.value</span></span>
-<span><span class="co">#&gt; age  0.01704533 -0.001899761  0.03730923   0.071</span></span>
-<span><span class="co">#&gt; sex -0.51321852 -0.860520833 -0.19994291   0.006</span></span></code></pre></div>
+<span><span class="co">#&gt; age  0.01704533 -0.002462382  0.03643551   0.086</span></span>
+<span><span class="co">#&gt; sex -0.51321852 -0.850467317 -0.20129079   0.005</span></span></code></pre></div>
 <p>To speed up computations using parallelisation, use the
 <code>parallel</code> and <code>ncpus</code> arguments:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -705,7 +715,7 @@ for <code><a href="https://rdrr.io/pkg/boot/man/boot.html" class="external-link"
 <span><span class="va">ratio</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">d</span>, <span class="va">w</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">x</span> <span class="op">*</span> <span class="va">w</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">u</span> <span class="op">*</span> <span class="va">w</span><span class="op">)</span></span>
 <span><span class="va">city.boot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/boot/man/boot.html" class="external-link">boot</a></span><span class="op">(</span><span class="va">city</span>, <span class="va">ratio</span>, R <span class="op">=</span> <span class="fl">999</span>, stype <span class="op">=</span> <span class="st">"w"</span>, sim <span class="op">=</span> <span class="st">"ordinary"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/boot.pval.html">boot.pval</a></span><span class="op">(</span><span class="va">city.boot</span>, theta_null <span class="op">=</span> <span class="fl">1.4</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.4814815</span></span>
+<span><span class="co">#&gt; [1] 0.4594595</span></span>
 <span></span>
 <span><span class="co"># Studentized test for the two sample difference of means problem</span></span>
 <span><span class="co"># using the final two series of the gravity data.</span></span>
@@ -723,7 +733,15 @@ for <code><a href="https://rdrr.io/pkg/boot/man/boot.html" class="external-link"
 <span><span class="va">grav1.boot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/boot/man/boot.html" class="external-link">boot</a></span><span class="op">(</span><span class="va">grav1</span>, <span class="va">diff.means</span>, R <span class="op">=</span> <span class="fl">999</span>, stype <span class="op">=</span> <span class="st">"f"</span>,</span>
 <span>                   strata <span class="op">=</span> <span class="va">grav1</span><span class="op">[</span> ,<span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/boot.pval.html">boot.pval</a></span><span class="op">(</span><span class="va">grav1.boot</span>, type <span class="op">=</span> <span class="st">"stud"</span>, theta_null <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.03503504</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.04704705</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
+</h2>
+<ul>
+<li>Davison, A.C. and Hinkley, D.V. (1997) <em>Bootstrap Methods and
+Their Application</em>. Cambridge University Press.</li>
+</ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

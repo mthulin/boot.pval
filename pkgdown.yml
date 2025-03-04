@@ -3,7 +3,8 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   boot_summary: boot_summary.html
-last_built: 2025-02-14T12:20Z
+  boot_t_test: boot_t_test.html
+last_built: 2025-03-04T15:37Z
 urls:
   reference: https://mthulin.github.io/boot.pval/reference
   article: https://mthulin.github.io/boot.pval/articles
