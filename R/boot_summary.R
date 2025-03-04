@@ -22,6 +22,7 @@
 #' @references
 #'  \insertRef{hall92}{boot.pval}
 #'  \insertRef{thulin21}{boot.pval}
+#' @seealso [boot_t_test()] for bootstrap t-tests, [boot_median_test()] for bootstrap tests for medians.
 #' @examples
 #' # Bootstrap summary of a linear model for mtcars:
 #' model <- lm(mpg ~ hp + vs, data = mtcars)

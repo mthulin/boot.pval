@@ -6,6 +6,7 @@
 #' @param type A vector of character strings representing the type of interval to base the test on. The value should be one of "norm", "basic", "stud", "perc" (the default), and "bca".
 #' @param theta_null The value of the parameter under the null hypothesis.
 #' @param pval_precision The desired precision for the p-value. The default is 1/R,  where R is the number of bootstrap samples in \code{boot_res}.
+#' @param alternative A character string specifying the alternative hypothesis. Must be one of "two.sided" (default), "greater", or "less".
 #' @param ... Additional arguments passed to \code{boot.ci}.
 #'
 #' @return A bootstrap p-value.
@@ -16,7 +17,8 @@
 #' @references
 #'  \insertRef{hall92}{boot.pval}
 #'
-#'  \insertRef{thulin21}{boot.pval}
+#'  \insertRef{thulin21}{boot.pval}'
+#' @seealso [boot_t_test()] for bootstrap t-tests, [boot_median_test()] for bootstrap tests for medians, [boot_summary()] for bootstrap tests for coefficients of regression models.
 #' @examples
 #' # Hypothesis test for the city data
 #' # H0: ratio = 1.4
@@ -46,6 +48,7 @@ boot.pval <- function(boot_res,
                       type = "perc",
                       theta_null = 0,
                       pval_precision = NULL,
+                      alternative = "two.sided",
                       ...)
 {
     if(is.null(pval_precision)) { pval_precision = 1/boot_res$R }
@@ -56,7 +59,7 @@ boot.pval <- function(boot_res,
     # Compute the 1-alpha confidence intervals, and extract
     # their bounds:
     ci <- suppressWarnings(boot::boot.ci(boot_res,
-            conf = 1- alpha_seq,
+            conf = 1-alpha_seq,
             type = type,
             ...))
 
@@ -69,7 +72,24 @@ boot.pval <- function(boot_res,
 
     # Find the smallest alpha such that theta_null is not contained in the 1-alpha
     # confidence interval:
-    alpha <- alpha_seq[which.min(theta_null >= bounds[,1] & theta_null <= bounds[,2])]
+    if(alternative == "two.sided") {
+      alpha <- alpha_seq[which.min(theta_null >= bounds[,1] & theta_null <= bounds[,2])]
+    }
+    if(alternative == "greater") {
+      if(sum(theta_null < bounds[,1]) == 0)
+      { alpha <- 1 } else
+      {
+        alpha <- alpha_seq[which.min(theta_null >= bounds[,1])]/2
+      }
+
+    }
+    if(alternative == "less") {
+      if(sum(theta_null > bounds[,2]) == 0)
+      { alpha <- 1 } else
+      {
+        alpha <- alpha_seq[which.min(theta_null <= bounds[,2])]/2
+      }
+    }
 
   # Return the p-value:
   return(alpha)
