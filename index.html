@@ -105,9 +105,13 @@
 <span><span class="co"># multiplicity using Holm's method:</span></span>
 <span><span class="fu"><a href="reference/boot_summary.html">boot_summary</a></span><span class="op">(</span><span class="va">model</span>, R <span class="op">=</span> <span class="fl">9999</span>, adjust.method <span class="op">=</span> <span class="st">"holm"</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Use case resampling instead of residual resampling:</span></span>
+<span><span class="fu"><a href="reference/boot_summary.html">boot_summary</a></span><span class="op">(</span><span class="va">model</span>, method <span class="op">=</span> <span class="st">"case"</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># Export results to a gt table:</span></span>
 <span><span class="fu"><a href="reference/boot_summary.html">boot_summary</a></span><span class="op">(</span><span class="va">model</span>, R <span class="op">=</span> <span class="fl">9999</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/summary_to_gt.html">summary_to_gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>See Davison and Hinkley (1997) for details about residual resampling (the default) and case resampling.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Export results to a Word document:</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ardata-fr.github.io/flextable-book/" class="external-link">flextable</a></span><span class="op">)</span></span>
@@ -158,10 +162,67 @@
 <code class="sourceCode R"><span><span class="fu"><a href="reference/censboot_summary.html">censboot_summary</a></span><span class="op">(</span><span class="va">model</span>, parallel <span class="op">=</span> <span class="st">"multicore"</span>, ncpus <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="tests-of-locations">Tests of locations<a class="anchor" aria-label="anchor" href="#tests-of-locations"></a>
+</h2>
+<p>Traditional versions of Student’s t-test (<code>t.test</code> in R) rely on the assumption of normality. For non-normal data, this can lead to misleading p-values and confidence intervals. In such cases, it is often recommended to use the Wilcoxon-Mann-Whitney test (<code>wilcox.test</code> in R) instead. Despite being described as a test of location, or a test for differences of medians, the Wilcoxon-Mann-Whitney test is actually a test of equivalence of distributions, unless strict assumptions are met. In addition, <code>wilcox.test</code> does not provide a confidence interval for the difference of the medians.</p>
+<p>In many cases, a better option is to use a bootstrap t-test (for inference about means) or a bootstrap median test (for inference about medians). These can be used without the normality assumption, and will provide confidence intervals for the parameters of interest.</p>
+<div class="section level3">
+<h3 id="two-sample-bootstrap-t-tests">Two-sample bootstrap t-tests<a class="anchor" aria-label="anchor" href="#two-sample-bootstrap-t-tests"></a>
+</h3>
+<p>To illustrate the use of bootstrap t-tests, we’ll use the classic <code>sleep</code> data, which “show the effect of two soporific drugs (increase in hours of sleep compared to control) on 10 patients” (see <code><a href="https://rdrr.io/r/datasets/sleep.html" class="external-link">?sleep</a></code> for details).</p>
+<p>We wish to test whether the mean value of the <code>extra</code> (increase in hours of sleep) variable differs between the two groups described by the <code>group</code> variable. The syntax for this is identical to that for <code>t.test</code>:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/boot_t_test.html">boot_t_test</a></span><span class="op">(</span><span class="va">extra</span> <span class="op">~</span> <span class="va">group</span>, data <span class="op">=</span> <span class="va">sleep</span><span class="op">)</span></span></code></pre></div>
+<p>If you prefer, you can also use the <code>|&gt;</code> pipe as follows:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/boot_t_test.html">boot_t_test</a></span><span class="op">(</span><span class="va">extra</span> <span class="op">~</span> <span class="va">group</span><span class="op">)</span></span></code></pre></div>
+<p>By default, the confidence interval and p-value are based on the studentized bootstrap confidence interval. Other options available are normal, basic, percentile and BCa intervals; see Chapter 5 of Davison and Hinkley (1997) for details. You can choose the method used using the <code>type</code> argument.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/boot_t_test.html">boot_t_test</a></span><span class="op">(</span><span class="va">extra</span> <span class="op">~</span> <span class="va">group</span>, type <span class="op">=</span> <span class="st">"perc"</span><span class="op">)</span> <span class="co"># Percentile interval</span></span>
+<span><span class="va">sleep</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/boot_t_test.html">boot_t_test</a></span><span class="op">(</span><span class="va">extra</span> <span class="op">~</span> <span class="va">group</span>, type <span class="op">=</span> <span class="st">"bca"</span><span class="op">)</span> <span class="co"># BCa interval</span></span></code></pre></div>
+<p>You can control the number of bootstrap replicates used (argument <code>R</code>; the default is 9999) or the direction of the alternative hypothesis (argument <code>alternative</code>):</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/boot_t_test.html">boot_t_test</a></span><span class="op">(</span><span class="va">extra</span> <span class="op">~</span> <span class="va">group</span>, R <span class="op">=</span> <span class="fl">999</span>, alternative <span class="op">=</span> <span class="st">"less"</span><span class="op">)</span></span></code></pre></div>
+<p>In this case, the data is actually paired, so it would make sense to perform a paired bootstrap t-test instead. We reshape the data to a wide format, so that the first measurements ends up in the variable <code>extra.1</code>, and the second measurement ends up in the variable <code>extra.2</code>. We can then run the test as follows:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Reshape to wide format:</span></span>
+<span><span class="va">sleep2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/reshape.html" class="external-link">reshape</a></span><span class="op">(</span><span class="va">sleep</span>, direction <span class="op">=</span> <span class="st">"wide"</span>,</span>
+<span>                  idvar <span class="op">=</span> <span class="st">"ID"</span>, timevar <span class="op">=</span> <span class="st">"group"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Traditional interface:</span></span>
+<span><span class="fu"><a href="reference/boot_t_test.html">boot_t_test</a></span><span class="op">(</span><span class="va">sleep2</span><span class="op">$</span><span class="va">extra.1</span>, <span class="va">sleep2</span><span class="op">$</span><span class="va">extra.2</span>, paired <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Using pipes:</span></span>
+<span><span class="va">sleep2</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/boot_t_test.html">boot_t_test</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Pair.html" class="external-link">Pair</a></span><span class="op">(</span><span class="va">extra.1</span>, <span class="va">extra.2</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="one-sample-bootstrap-t-tests">One-sample bootstrap t-tests<a class="anchor" aria-label="anchor" href="#one-sample-bootstrap-t-tests"></a>
+</h3>
+<p>For one sample bootstrap t-tests, we only need to provide a single vector containing the measurements. We can also specify the null value of the mean (argument <code>mu</code>):</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Traditional interface:</span></span>
+<span><span class="fu"><a href="reference/boot_t_test.html">boot_t_test</a></span><span class="op">(</span><span class="va">sleep</span><span class="op">$</span><span class="va">extra</span>, mu <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Using pipes:</span></span>
+<span><span class="va">sleep</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/boot_t_test.html">boot_t_test</a></span><span class="op">(</span><span class="va">extra</span> <span class="op">~</span> <span class="fl">1</span>, mu <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="bootstrap-median-tests">Bootstrap median tests<a class="anchor" aria-label="anchor" href="#bootstrap-median-tests"></a>
+</h3>
+<p>Running a bootstrap median test with the <code>boot_median_test</code> function is completely analogously to running a bootstrap t-test. The only difference is under the hood - medians are used instead of means. Because the studentized and BCa versions of this test use an inner bootstrap to estimate the variance of the statistic, these takes longer to run than other tests presented here.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/boot_median_test.html">boot_median_test</a></span><span class="op">(</span><span class="va">extra</span> <span class="op">~</span> <span class="va">group</span>, data <span class="op">=</span> <span class="va">sleep</span>, type <span class="op">=</span> <span class="st">"perc"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sleep</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/boot_median_test.html">boot_median_test</a></span><span class="op">(</span><span class="va">extra</span> <span class="op">~</span> <span class="va">group</span>, R <span class="op">=</span> <span class="fl">999</span>, alternative <span class="op">=</span> <span class="st">"less"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/boot_median_test.html">boot_median_test</a></span><span class="op">(</span><span class="va">sleep</span><span class="op">$</span><span class="va">extra</span>, mu <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
 <h2 id="other-hypothesis-tests">Other hypothesis tests<a class="anchor" aria-label="anchor" href="#other-hypothesis-tests"></a>
 </h2>
 <p>Bootstrap p-values for hypothesis tests based on <code>boot</code> objects can be obtained using the <code>boot.pval</code> function. The following examples are extensions of those given in the documentation for <code><a href="https://rdrr.io/pkg/boot/man/boot.html" class="external-link">boot::boot</a></code>:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Hypothesis test for the city data</span></span>
 <span><span class="co"># H0: ratio = 1.4</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">boot</span><span class="op">)</span></span>
@@ -185,6 +246,14 @@
 <span><span class="va">grav1.boot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/boot/man/boot.html" class="external-link">boot</a></span><span class="op">(</span><span class="va">grav1</span>, <span class="va">diff.means</span>, R <span class="op">=</span> <span class="fl">999</span>, stype <span class="op">=</span> <span class="st">"f"</span>,</span>
 <span>                   strata <span class="op">=</span> <span class="va">grav1</span><span class="op">[</span> ,<span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/boot.pval.html">boot.pval</a></span><span class="op">(</span><span class="va">grav1.boot</span>, type <span class="op">=</span> <span class="st">"stud"</span>, theta_null <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<ul>
+<li>Davison, A.C. and Hinkley, D.V. (1997) <em>Bootstrap Methods and Their Application</em>. Cambridge University Press.</li>
+<li>Thulin, M. (2024) <em>Modern Statistics with R</em>. Second edition. Chapman &amp; Hall/CRC Press.</li>
+</ul>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
