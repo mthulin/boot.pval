@@ -124,10 +124,9 @@
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/glmer.html" class="external-link">glmer</a></span><span class="op">(</span><span class="va">TICKS</span> <span class="op">~</span> <span class="va">YEAR</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">LOCATION</span><span class="op">)</span>,</span>
 <span>           data <span class="op">=</span> <span class="va">grouseticks</span>, family <span class="op">=</span> <span class="va">poisson</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/boot_summary.html">boot_summary</a></span><span class="op">(</span><span class="va">model</span>, R <span class="op">=</span> <span class="fl">99</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="speeding-up-computations">Speeding up computations<a class="anchor" aria-label="anchor" href="#speeding-up-computations"></a>
-</h2>
+<div class="section level3">
+<h3 id="speeding-up-computations">Speeding up computations<a class="anchor" aria-label="anchor" href="#speeding-up-computations"></a>
+</h3>
 <p>For complex models, speed can be greatly improved by using parallelisation. For <code>lmer</code> and <code>glmer</code> models, this is set using the <code>parallel</code> (available options are <code>"multicore"</code> and <code>"snow"</code>). The number of CPUs to use is set using <code>ncpus</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/glmer.html" class="external-link">glmer</a></span><span class="op">(</span><span class="va">TICKS</span> <span class="op">~</span> <span class="va">YEAR</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">LOCATION</span><span class="op">)</span>,</span>
@@ -138,9 +137,9 @@
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">hp</span> <span class="op">+</span> <span class="va">vs</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/boot_summary.html">boot_summary</a></span><span class="op">(</span><span class="va">model</span>, R <span class="op">=</span> <span class="fl">9999</span>, ncores <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="survival-models">Survival models<a class="anchor" aria-label="anchor" href="#survival-models"></a>
-</h2>
+<div class="section level3">
+<h3 id="survival-models">Survival models<a class="anchor" aria-label="anchor" href="#survival-models"></a>
+</h3>
 <p>Survival regression models should be fitted using the argument <code>model = TRUE</code>. A summary table can then be obtained using <code>censboot_summary</code>. By default, the table contains exponentiated coefficients (i.e. hazard ratios, in the case of a Cox PH model).</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival" class="external-link">survival</a></span><span class="op">)</span></span>
@@ -161,8 +160,9 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/censboot_summary.html">censboot_summary</a></span><span class="op">(</span><span class="va">model</span>, parallel <span class="op">=</span> <span class="st">"multicore"</span>, ncpus <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 </div>
+</div>
 <div class="section level2">
-<h2 id="tests-of-locations">Tests of locations<a class="anchor" aria-label="anchor" href="#tests-of-locations"></a>
+<h2 id="tests-of-location">Tests of location<a class="anchor" aria-label="anchor" href="#tests-of-location"></a>
 </h2>
 <p>Traditional versions of Student’s t-test (<code>t.test</code> in R) rely on the assumption of normality. For non-normal data, this can lead to misleading p-values and confidence intervals. In such cases, it is often recommended to use the Wilcoxon-Mann-Whitney test (<code>wilcox.test</code> in R) instead. Despite being described as a test of location, or a test for differences of medians, the Wilcoxon-Mann-Whitney test is actually a test of equivalence of distributions, unless strict assumptions are met. In addition, <code>wilcox.test</code> does not provide a confidence interval for the difference of the medians.</p>
 <p>In many cases, a better option is to use a bootstrap t-test (for inference about means) or a bootstrap median test (for inference about medians). These can be used without the normality assumption, and will provide confidence intervals for the parameters of interest.</p>
