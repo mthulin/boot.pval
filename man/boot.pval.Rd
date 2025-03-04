@@ -4,7 +4,14 @@
 \alias{boot.pval}
 \title{Compute Bootstrap p-values}
 \usage{
-boot.pval(boot_res, type = "perc", theta_null = 0, pval_precision = NULL, ...)
+boot.pval(
+  boot_res,
+  type = "perc",
+  theta_null = 0,
+  pval_precision = NULL,
+  alternative = "two.sided",
+  ...
+)
 }
 \arguments{
 \item{boot_res}{An object of class "boot" containing the output of a bootstrap calculation.}
@@ -14,6 +21,8 @@ boot.pval(boot_res, type = "perc", theta_null = 0, pval_precision = NULL, ...)
 \item{theta_null}{The value of the parameter under the null hypothesis.}
 
 \item{pval_precision}{The desired precision for the p-value. The default is 1/R,  where R is the number of bootstrap samples in \code{boot_res}.}
+
+\item{alternative}{A character string specifying the alternative hypothesis. Must be one of "two.sided" (default), "greater", or "less".}
 
 \item{...}{Additional arguments passed to \code{boot.ci}.}
 }

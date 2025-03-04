@@ -120,11 +120,17 @@ boot_t_test(x ~ y, data = example_data, R = 999)
 # Two-sample (Welch) test using the pipe:
 example_data |> boot_t_test(x ~ y, R = 999)
 
+# With a directed alternative hypothesis:
+example_data |> boot_t_test(x ~ y, R = 999, alternative = "greater")
+
 # One-sample test:
 boot_t_test(example_data$x, R = 999)
 
 # One-sample test using the pipe:
 example_data |> boot_t_test(x ~ 1, R = 999)
+
+# With a directed alternative hypothesis:
+example_data |> boot_t_test(x ~ 1, R = 999, mu = 0.5, alternative = "less")
 
 # Paired test:
 boot_t_test(example_data$x[example_data$y==1],

@@ -65,11 +65,17 @@ t_stat_1samp <- function(data, i)
 #' # Two-sample (Welch) test using the pipe:
 #' example_data |> boot_t_test(x ~ y, R = 999)
 #'
+#' # With a directed alternative hypothesis:
+#' example_data |> boot_t_test(x ~ y, R = 999, alternative = "greater")
+#'
 #' # One-sample test:
 #' boot_t_test(example_data$x, R = 999)
 #'
 #' # One-sample test using the pipe:
 #' example_data |> boot_t_test(x ~ 1, R = 999)
+#'
+#' # With a directed alternative hypothesis:
+#' example_data |> boot_t_test(x ~ 1, R = 999, mu = 0.5, alternative = "less")
 #'
 #' # Paired test:
 #' boot_t_test(example_data$x[example_data$y==1],
@@ -163,12 +169,26 @@ boot_t_test.default <- function(x, y = NULL, alternative = c("two.sided", "less"
       tstat <- (mx - my - mu)/stderr
     }
     if (alternative == "less") {
-      pval <- NA
-      cint <- NA
+      pval <- boot.pval(boot_res, type = type, theta_null = mu, alternative = "less")
+      ci <- boot::boot.ci(boot_res, type = type, conf = (1-(1-conf.level)*2))
+      cint <- switch(type,
+                     norm = ci$normal[,2:3],
+                     basic = ci$basic[,4:5],
+                     stud = ci$student[,4:5],
+                     perc = ci$percent[,4:5],
+                     bca = ci$bca[,4:5])
+      cint[1] <- -Inf
     }
     else if (alternative == "greater") {
-      pval <- NA
-      cint <- NA
+      pval <- boot.pval(boot_res, type = type, theta_null = mu, alternative = "greater")
+      ci <- boot::boot.ci(boot_res, type = type, conf = (1-(1-conf.level)*2))
+      cint <- switch(type,
+                     norm = ci$normal[,2:3],
+                     basic = ci$basic[,4:5],
+                     stud = ci$student[,4:5],
+                     perc = ci$percent[,4:5],
+                     bca = ci$bca[,4:5])
+      cint[2] <- Inf
     }
     else {
       pval <- boot.pval(boot_res, type = type, theta_null = mu)
