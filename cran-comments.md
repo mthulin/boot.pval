@@ -1,5 +1,5 @@
 ## Updated package
-This is a new version of the package. Support for missing values have been added, as have support for BCa intervals. Presentation of p-values in regression models has been improved. A vignette has been added.
+This is a new version of the package. Support for one-sided tests has been added, along with convenience functions for tests of location. A new vignette has been added.
 
 ## Test environments
 * local Ubuntu 24.04 install, R 4.4.2
@@ -8,5 +8,8 @@ This is a new version of the package. Support for missing values have been added
 ## R CMD check results
 There were no ERRORs, WARNINGs or NOTEs.
 
-## Downstream dependencies
-None.
+## revdepcheck results
+We checked 1 reverse dependency, comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 0 packages
