@@ -16,8 +16,7 @@
 #' @importFrom Rdpack reprompt
 #' @references
 #'  \insertRef{hall92}{boot.pval}
-#'
-#'  \insertRef{thulin21}{boot.pval}'
+#'  \insertRef{thulin21}{boot.pval}
 #' @seealso [boot_t_test()] for bootstrap t-tests, [boot_median_test()] for bootstrap tests for medians, [boot_summary()] for bootstrap tests for coefficients of regression models.
 #' @examples
 #' # Hypothesis test for the city data
@@ -72,6 +71,9 @@ boot.pval <- function(boot_res,
 
     # Find the smallest alpha such that theta_null is not contained in the 1-alpha
     # confidence interval:
+    if(!(alternative %in% c("two.sided", "less", "greater"))) {
+      stop('alternative must be either "two.sided", "less" or "greater"')
+    }
     if(alternative == "two.sided") {
       alpha <- alpha_seq[which.min(theta_null >= bounds[,1] & theta_null <= bounds[,2])]
     }

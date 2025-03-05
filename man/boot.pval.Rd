@@ -66,8 +66,7 @@ boot.pval(grav1.boot, type = "stud", theta_null = 0)
 }
 \references{
 \insertRef{hall92}{boot.pval}
-
-\insertRef{thulin21}{boot.pval}'
+\insertRef{thulin21}{boot.pval}
 }
 \seealso{
 \code{\link[=boot_t_test]{boot_t_test()}} for bootstrap t-tests, \code{\link[=boot_median_test]{boot_median_test()}} for bootstrap tests for medians, \code{\link[=boot_summary]{boot_summary()}} for bootstrap tests for coefficients of regression models.

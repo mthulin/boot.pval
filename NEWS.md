@@ -1,4 +1,4 @@
-# boot.pval development version
+# boot.pval version 0.7
 Added support for one-sided tests. Added the boot_t_test and boot_median_test functions for carrying out bootstrap tests of location. Updated documentation for boot_summary and censboot_summary to not mention studentized intervals (which aren't supported by upstream packages). Added a new vignette.
 
 # boot.pval version 0.6

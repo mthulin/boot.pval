@@ -1,12 +1,12 @@
 Package: boot.pval
 Title: Bootstrap p-Values
-Version: 0.6.0.2000
+Version: 0.7.0
 Authors@R: 
     person(given = "Måns",
            family = "Thulin",
            role = c("aut", "cre"),
            email = "mans@statistikkonsult.com")
-Description: Computation of bootstrap p-values through inversion of confidence intervals, including convenience functions for regression models.
+Description: Computation of bootstrap p-values through inversion of confidence intervals, including convenience functions for regression models and tests of location.
 License: MIT + file LICENSE
 URL: https://github.com/mthulin/boot.pval, https://mthulin.github.io/boot.pval/
 BugReports: https://github.com/mthulin/boot.pval/issues
@@ -14,6 +14,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 RdMacros: Rdpack
+Depends: R (>= 4.1.0)
 Imports: 
     boot,
     Rdpack,
