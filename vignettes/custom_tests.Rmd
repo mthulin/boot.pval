@@ -22,54 +22,65 @@ p-values can be computed by inverting the corresponding confidence intervals, as
 
 
 ## Custom hypothesis tests
-Bootstrap p-values for hypothesis tests based on `boot` objects can be obtained using the `boot.pval` function.
-
-The example below, based on code from [Section 7.4.2 of Modern Statistics with R](https://www.modernstatisticswithr.com/modchapter.html#a-general-approach), shows how to implement a bootstrap correlation test:
-
+Bootstrap p-values for hypothesis tests based on `boot` objects can be obtained using the `boot.pval` function. The example below, based in part on code from [Section 7.4.2 of Modern Statistics with R](https://www.modernstatisticswithr.com/modchapter.html#a-general-approach), shows how to implement a bootstrap correlation test.
 ```{r, echo = FALSE}
-set.seed(102420)
+set.seed(142)
 ```
 
+First, we create a function for computing the correlation given a bivariate dataset and a vector containing row numbers (the indices of the bootstrap sample). We also include a `method` option to allow the user to choose which type of correlation is used:
 
 ```{r}
-library(boot)
-library(boot.pval)
-
-# Create a function for computing the correlation given a bootstrap sample:
 cor_boot <- function(data, row_numbers, method = "pearson")
 { 
     # Obtain the bootstrap sample:
     sample <- data[row_numbers,]
     
     # Compute and return the statistic for the bootstrap sample:
-    return(cor(sample[, 1], sample[, 2], method = method))
+    return(cor(sample[[1]], sample[[2]], method = method))
 }
+```
 
-# We wish to test the correlation between the variables hp and
-# drat in the mtcars data.
-# Run the resampling:
+Let's say that we wish to test the correlation between the variables `hp` and `drat` in the `mtcars` data:
+
+```{r}
+mtcars |> plot(hp ~ drat, data = _)
+```
+
+We subset the data (below I use the base R function `subset` for this; see my post on [base R replacements of `tidyverse` functions](https://mansthulin.se/posts/basetidyverseverbs/) for more on this) and then use `boot` to draw 999 bootstrap samples:
+
+```{r}
+library(boot)
 boot_res <- mtcars |> 
               subset(select = c(hp, drat)) |> 
-              na.omit() |> 
-              boot(cor_boot, 999)
+              boot(statistic = cor_boot,
+                   R = 999)
+```
 
-# Show the bootstrap distribution:
+If we like, we can plot the bootstrap distribution:
+```{r}
 plot(boot_res)
+```
 
-# Compute confidence intervals:
+And compute confidence intervals:
+```{r}
 boot.ci(boot_res)
+```
 
+To compute the p-value corresponding to the different intervals, we can now use `boot.pval`:
+```{r}
 # Compute the bootstrap p-value based on the percentile interval:
+library(boot.pval)
 boot.pval(boot_res, type = "perc")
+```
 
+For studentized intervals, we also need to estimate the variance of the statistic, e.g. using an inner bootstrap. We create a new function for this, run a new resampling, and compute the studentized p-value:
 
-# For studentized intervals, we also need to estimate the
-# variance of the statistic, e.g. using an inner bootstrap:
+```{r}
 cor_boot_student <- function(data, row_numbers, method = "pearson")
 { 
     sample <- data[row_numbers,]
     
-    correlation <- cor(sample[, 1], sample[, 2], method = method)
+    correlation <- cor(sample[[1]], sample[[2]], method = method)
     
     inner_boot <- boot(sample, cor_boot, 100)
     variance <- var(inner_boot$t)
@@ -86,7 +97,9 @@ boot_res <- mtcars |>
 boot.pval(boot_res, type = "stud")
 ```
 
+That's all there is to it! Note that using `boot.pval` is completely analogous to how we use `boot.ci` from `boot`.
 
+## An example from `boot`
 The following example is an extensions of that given in the documentation for `boot::boot`:
 
 ```{r message = FALSE}
