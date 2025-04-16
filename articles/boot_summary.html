@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>An introduction to bootstrap p-values for regression models using the boot.pval package • boot.pval</title>
+<title>Bootstrap p-values and confidence intervals for regression models • boot.pval</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="An introduction to bootstrap p-values for regression models using the boot.pval package">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Bootstrap p-values and confidence intervals for regression models">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">boot.pval</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.1000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,8 +33,9 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/boot_summary.html">An introduction to bootstrap p-values for regression models using the boot.pval package</a></li>
+<li><a class="dropdown-item" href="../articles/boot_summary.html">Bootstrap p-values and confidence intervals for regression models</a></li>
     <li><a class="dropdown-item" href="../articles/boot_t_test.html">Bootstrap tests for location</a></li>
+    <li><a class="dropdown-item" href="../articles/custom_tests.html">Creating custom bootstrap tests</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -56,7 +57,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>An introduction to bootstrap p-values for regression models using the boot.pval package</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Bootstrap p-values and confidence intervals for regression models</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/mthulin/boot.pval/blob/main/vignettes/boot_summary.Rmd" class="external-link"><code>vignettes/boot_summary.Rmd</code></a></small>
@@ -94,11 +95,11 @@ functions. Currently, the following models are supported:</p>
 <ul>
 <li>Linear models fitted using <code>lm</code>,</li>
 <li>Generalised linear models fitted using <code>glm</code> or
-<code>glm.nb</code>,</li>
+<code><a href="https://rdrr.io/pkg/MASS/man/glm.nb.html" class="external-link">MASS::glm.nb</a></code>,</li>
 <li>Nonlinear models fitted using <code>nls</code>,</li>
 <li>Robust linear models fitted using <code><a href="https://rdrr.io/pkg/MASS/man/rlm.html" class="external-link">MASS::rlm</a></code>,</li>
 <li>Ordered logistic or probit regression models fitted (without
-weights) using <code>MASS:polr</code>,</li>
+weights) using <code><a href="https://rdrr.io/pkg/MASS/man/polr.html" class="external-link">MASS::polr</a></code>,</li>
 <li>Linear mixed models fitted using <code><a href="https://rdrr.io/pkg/lme4/man/lmer.html" class="external-link">lme4::lmer</a></code> or
 <code>lmerTest::lmer</code>,</li>
 <li>Generalised linear mixed models fitted using
@@ -118,12 +119,12 @@ values among the columns actually used in fitting the model.</li>
 </ul>
 <p>A number of examples are available in Chapters 8 and 9 of <a href="https://www.modernstatisticswithr.com/" class="external-link">Modern Statistics with
 R</a>.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mthulin/boot.pval" class="external-link">boot.pval</a></span><span class="op">)</span></span></code></pre></div>
 <p>Here are some simple examples with a linear regression model for the
 <code>mtcars</code> data:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Bootstrap summary of a linear model for mtcars:</span></span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mthulin/boot.pval" class="external-link">boot.pval</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Bootstrap summary of a linear model for mtcars:</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">hp</span> <span class="op">+</span> <span class="va">vs</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/boot_summary.html">boot_summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                Estimate Lower.bound Upper.bound p.value</span></span>
@@ -629,7 +630,7 @@ R</a>.</p>
 </div>
 <p>See Davison and Hinkley (1997) for details about residual resampling
 (the default) and case resampling.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Export results to a Word document:</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ardata-fr.github.io/flextable-book/" class="external-link">flextable</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/boot_summary.html">boot_summary</a></span><span class="op">(</span><span class="va">model</span>, R <span class="op">=</span> <span class="fl">9999</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -637,7 +638,7 @@ R</a>.</p>
 <span>  <span class="fu"><a href="https://davidgohel.github.io/flextable/reference/save_as_docx.html" class="external-link">save_as_docx</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"my_table.docx"</span><span class="op">)</span></span></code></pre></div>
 <p>And a toy example for a generalised linear mixed model (using a small
 number of bootstrap repetitions):</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lme4/lme4/" class="external-link">lme4</a></span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/glmer.html" class="external-link">glmer</a></span><span class="op">(</span><span class="va">TICKS</span> <span class="op">~</span> <span class="va">YEAR</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">LOCATION</span><span class="op">)</span>,</span>
 <span>           data <span class="op">=</span> <span class="va">grouseticks</span>, family <span class="op">=</span> <span class="va">poisson</span><span class="op">)</span></span>
@@ -651,12 +652,12 @@ parallelisation. For <code>lmer</code> and <code>glmer</code> models,
 this is set using the <code>parallel</code> (available options are
 <code>"multicore"</code> and <code>"snow"</code>). The number of CPUs to
 use is set using <code>ncpus</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/glmer.html" class="external-link">glmer</a></span><span class="op">(</span><span class="va">TICKS</span> <span class="op">~</span> <span class="va">YEAR</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">LOCATION</span><span class="op">)</span>,</span>
 <span>           data <span class="op">=</span> <span class="va">grouseticks</span>, family <span class="op">=</span> <span class="va">poisson</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/boot_summary.html">boot_summary</a></span><span class="op">(</span><span class="va">model</span>, R <span class="op">=</span> <span class="fl">999</span>, parallel <span class="op">=</span> <span class="st">"multicore"</span>, ncpus <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <p>For other models, use <code>ncores</code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">hp</span> <span class="op">+</span> <span class="va">vs</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/boot_summary.html">boot_summary</a></span><span class="op">(</span><span class="va">model</span>, R <span class="op">=</span> <span class="fl">9999</span>, ncores <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -668,7 +669,7 @@ use is set using <code>ncpus</code>.</p>
 <code>censboot_summary</code>. By default, the table contains
 exponentiated coefficients (i.e. hazard ratios, in the case of a Cox PH
 model).</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival" class="external-link">survival</a></span><span class="op">)</span></span>
 <span><span class="co"># Weibull AFT model:</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/survreg.html" class="external-link">survreg</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">lung</span>,</span>
@@ -698,49 +699,19 @@ model).</p>
 <span><span class="co">#&gt; sex -0.51321852 -0.850467317 -0.20129079   0.005</span></span></code></pre></div>
 <p>To speed up computations using parallelisation, use the
 <code>parallel</code> and <code>ncpus</code> arguments:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/censboot_summary.html">censboot_summary</a></span><span class="op">(</span><span class="va">model</span>, parallel <span class="op">=</span> <span class="st">"multicore"</span>, ncpus <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="other-hypothesis-tests">Other hypothesis tests<a class="anchor" aria-label="anchor" href="#other-hypothesis-tests"></a>
-</h2>
-<p>Bootstrap p-values for hypothesis tests based on <code>boot</code>
-objects can be obtained using the <code>boot.pval</code> function. The
-following examples are extensions of those given in the documentation
-for <code><a href="https://rdrr.io/pkg/boot/man/boot.html" class="external-link">boot::boot</a></code>:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Hypothesis test for the city data</span></span>
-<span><span class="co"># H0: ratio = 1.4</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">boot</span><span class="op">)</span></span>
-<span><span class="va">ratio</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">d</span>, <span class="va">w</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">x</span> <span class="op">*</span> <span class="va">w</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">u</span> <span class="op">*</span> <span class="va">w</span><span class="op">)</span></span>
-<span><span class="va">city.boot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/boot/man/boot.html" class="external-link">boot</a></span><span class="op">(</span><span class="va">city</span>, <span class="va">ratio</span>, R <span class="op">=</span> <span class="fl">999</span>, stype <span class="op">=</span> <span class="st">"w"</span>, sim <span class="op">=</span> <span class="st">"ordinary"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/boot.pval.html">boot.pval</a></span><span class="op">(</span><span class="va">city.boot</span>, theta_null <span class="op">=</span> <span class="fl">1.4</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.4594595</span></span>
-<span></span>
-<span><span class="co"># Studentized test for the two sample difference of means problem</span></span>
-<span><span class="co"># using the final two series of the gravity data.</span></span>
-<span><span class="va">diff.means</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">d</span>, <span class="va">f</span><span class="op">)</span></span>
-<span><span class="op">{</span></span>
-<span>  <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
-<span>  <span class="va">gp1</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">series</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
-<span>  <span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">[</span><span class="va">gp1</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">*</span> <span class="va">f</span><span class="op">[</span><span class="va">gp1</span><span class="op">]</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">f</span><span class="op">[</span><span class="va">gp1</span><span class="op">]</span><span class="op">)</span></span>
-<span>  <span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">[</span><span class="op">-</span><span class="va">gp1</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">*</span> <span class="va">f</span><span class="op">[</span><span class="op">-</span><span class="va">gp1</span><span class="op">]</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">f</span><span class="op">[</span><span class="op">-</span><span class="va">gp1</span><span class="op">]</span><span class="op">)</span></span>
-<span>  <span class="va">ss1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">[</span><span class="va">gp1</span>,<span class="fl">1</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="va">f</span><span class="op">[</span><span class="va">gp1</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span> <span class="op">(</span><span class="va">m1</span> <span class="op">*</span>  <span class="va">m1</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">f</span><span class="op">[</span><span class="va">gp1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">ss2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">[</span><span class="op">-</span><span class="va">gp1</span>,<span class="fl">1</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="va">f</span><span class="op">[</span><span class="op">-</span><span class="va">gp1</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span> <span class="op">(</span><span class="va">m2</span> <span class="op">*</span>  <span class="va">m2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">f</span><span class="op">[</span><span class="op">-</span><span class="va">gp1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">m1</span> <span class="op">-</span> <span class="va">m2</span>, <span class="op">(</span><span class="va">ss1</span> <span class="op">+</span> <span class="va">ss2</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="va">grav1</span> <span class="op">&lt;-</span> <span class="va">gravity</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">gravity</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fl">7</span>, <span class="op">]</span></span>
-<span><span class="va">grav1.boot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/boot/man/boot.html" class="external-link">boot</a></span><span class="op">(</span><span class="va">grav1</span>, <span class="va">diff.means</span>, R <span class="op">=</span> <span class="fl">999</span>, stype <span class="op">=</span> <span class="st">"f"</span>,</span>
-<span>                   strata <span class="op">=</span> <span class="va">grav1</span><span class="op">[</span> ,<span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/boot.pval.html">boot.pval</a></span><span class="op">(</span><span class="va">grav1.boot</span>, type <span class="op">=</span> <span class="st">"stud"</span>, theta_null <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.04704705</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <ul>
 <li>Davison, A.C. and Hinkley, D.V. (1997) <em>Bootstrap Methods and
 Their Application</em>. Cambridge University Press.</li>
+<li>Hall P (1992). <em>The Bootstrap and Edgeworth Expansion</em>.
+Springer, New York.</li>
+<li>Thulin, M. (2024) <em>Modern Statistics with R</em>. Second edition.
+Chapman &amp; Hall/CRC Press.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
