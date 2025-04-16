@@ -88,39 +88,46 @@ theta.</li>
 <h2 id="custom-hypothesis-tests">Custom hypothesis tests<a class="anchor" aria-label="anchor" href="#custom-hypothesis-tests"></a>
 </h2>
 <p>Bootstrap p-values for hypothesis tests based on <code>boot</code>
-objects can be obtained using the <code>boot.pval</code> function.</p>
-<p>The example below, based on code from <a href="https://www.modernstatisticswithr.com/modchapter.html#a-general-approach" class="external-link">Section
+objects can be obtained using the <code>boot.pval</code> function. The
+example below, based in part on code from <a href="https://www.modernstatisticswithr.com/modchapter.html#a-general-approach" class="external-link">Section
 7.4.2 of Modern Statistics with R</a>, shows how to implement a
-bootstrap correlation test:</p>
+bootstrap correlation test.</p>
+<p>First, we create a function for computing the correlation given a
+bivariate dataset and a vector containing row numbers (the indices of
+the bootstrap sample). We also include a <code>method</code> option to
+allow the user to choose which type of correlation is used:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">boot</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mthulin/boot.pval" class="external-link">boot.pval</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Create a function for computing the correlation given a bootstrap sample:</span></span>
-<span><span class="va">cor_boot</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">row_numbers</span>, <span class="va">method</span> <span class="op">=</span> <span class="st">"pearson"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">cor_boot</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">row_numbers</span>, <span class="va">method</span> <span class="op">=</span> <span class="st">"pearson"</span><span class="op">)</span></span>
 <span><span class="op">{</span> </span>
 <span>    <span class="co"># Obtain the bootstrap sample:</span></span>
 <span>    <span class="va">sample</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">[</span><span class="va">row_numbers</span>,<span class="op">]</span></span>
 <span>    </span>
 <span>    <span class="co"># Compute and return the statistic for the bootstrap sample:</span></span>
-<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">sample</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, <span class="va">sample</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>, method <span class="op">=</span> <span class="va">method</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># We wish to test the correlation between the variables hp and</span></span>
-<span><span class="co"># drat in the mtcars data.</span></span>
-<span><span class="co"># Run the resampling:</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">sample</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">sample</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, method <span class="op">=</span> <span class="va">method</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>Let’s say that we wish to test the correlation between the variables
+<code>hp</code> and <code>drat</code> in the <code>mtcars</code>
+data:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mtcars</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">hp</span> <span class="op">~</span> <span class="va">drat</span>, data <span class="op">=</span> <span class="va">_</span><span class="op">)</span></span></code></pre></div>
+<p><img src="custom_tests_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<p>We subset the data (below I use the base R function
+<code>subset</code> for this; see my post on <a href="https://mansthulin.se/posts/basetidyverseverbs/" class="external-link">base R
+replacements of <code>tidyverse</code> functions</a> for more on this)
+and then use <code>boot</code> to draw 999 bootstrap samples:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">boot</span><span class="op">)</span></span>
 <span><span class="va">boot_res</span> <span class="op">&lt;-</span> <span class="va">mtcars</span> <span class="op">|&gt;</span> </span>
 <span>              <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span>select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">hp</span>, <span class="va">drat</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>              <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>              <span class="fu"><a href="https://rdrr.io/pkg/boot/man/boot.html" class="external-link">boot</a></span><span class="op">(</span><span class="va">cor_boot</span>, <span class="fl">999</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Show the bootstrap distribution:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">boot_res</span><span class="op">)</span></span></code></pre></div>
-<p><img src="custom_tests_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># Compute confidence intervals:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/boot/man/boot.ci.html" class="external-link">boot.ci</a></span><span class="op">(</span><span class="va">boot_res</span><span class="op">)</span></span>
+<span>              <span class="fu"><a href="https://rdrr.io/pkg/boot/man/boot.html" class="external-link">boot</a></span><span class="op">(</span>statistic <span class="op">=</span> <span class="va">cor_boot</span>,</span>
+<span>                   R <span class="op">=</span> <span class="fl">999</span><span class="op">)</span></span></code></pre></div>
+<p>If we like, we can plot the bootstrap distribution:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">boot_res</span><span class="op">)</span></span></code></pre></div>
+<p><img src="custom_tests_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<p>And compute confidence intervals:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/boot/man/boot.ci.html" class="external-link">boot.ci</a></span><span class="op">(</span><span class="va">boot_res</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in boot.ci(boot_res): bootstrap variances needed for studentized</span></span>
 <span><span class="co">#&gt; intervals</span></span>
 <span><span class="co">#&gt; BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS</span></span>
@@ -131,25 +138,28 @@ bootstrap correlation test:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Intervals : </span></span>
 <span><span class="co">#&gt; Level      Normal              Basic         </span></span>
-<span><span class="co">#&gt; 95%   (-0.7464, -0.1352 )   (-0.7599, -0.1410 )  </span></span>
+<span><span class="co">#&gt; 95%   (-0.7289, -0.1479 )   (-0.7599, -0.1645 )  </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Level     Percentile            BCa          </span></span>
-<span><span class="co">#&gt; 95%   (-0.7565, -0.1376 )   (-0.7089, -0.0682 )  </span></span>
+<span><span class="co">#&gt; 95%   (-0.7330, -0.1376 )   (-0.6819, -0.0458 )  </span></span>
 <span><span class="co">#&gt; Calculations and Intervals on Original Scale</span></span>
-<span><span class="co">#&gt; Some BCa intervals may be unstable</span></span>
-<span></span>
-<span><span class="co"># Compute the bootstrap p-value based on the percentile interval:</span></span>
+<span><span class="co">#&gt; Some BCa intervals may be unstable</span></span></code></pre></div>
+<p>To compute the p-value corresponding to the different intervals, we
+can now use <code>boot.pval</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Compute the bootstrap p-value based on the percentile interval:</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mthulin/boot.pval" class="external-link">boot.pval</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/boot.pval.html">boot.pval</a></span><span class="op">(</span><span class="va">boot_res</span>, type <span class="op">=</span> <span class="st">"perc"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.01101101</span></span>
-<span></span>
-<span></span>
-<span><span class="co"># For studentized intervals, we also need to estimate the</span></span>
-<span><span class="co"># variance of the statistic, e.g. using an inner bootstrap:</span></span>
-<span><span class="va">cor_boot_student</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">row_numbers</span>, <span class="va">method</span> <span class="op">=</span> <span class="st">"pearson"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.008008008</span></span></code></pre></div>
+<p>For studentized intervals, we also need to estimate the variance of
+the statistic, e.g. using an inner bootstrap. We create a new function
+for this, run a new resampling, and compute the studentized p-value:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cor_boot_student</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">row_numbers</span>, <span class="va">method</span> <span class="op">=</span> <span class="st">"pearson"</span><span class="op">)</span></span>
 <span><span class="op">{</span> </span>
 <span>    <span class="va">sample</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">[</span><span class="va">row_numbers</span>,<span class="op">]</span></span>
 <span>    </span>
-<span>    <span class="va">correlation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">sample</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, <span class="va">sample</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>, method <span class="op">=</span> <span class="va">method</span><span class="op">)</span></span>
+<span>    <span class="va">correlation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">sample</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">sample</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, method <span class="op">=</span> <span class="va">method</span><span class="op">)</span></span>
 <span>    </span>
 <span>    <span class="va">inner_boot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/boot/man/boot.html" class="external-link">boot</a></span><span class="op">(</span><span class="va">sample</span>, <span class="va">cor_boot</span>, <span class="fl">100</span><span class="op">)</span></span>
 <span>    <span class="va">variance</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">inner_boot</span><span class="op">$</span><span class="va">t</span><span class="op">)</span></span>
@@ -164,16 +174,23 @@ bootstrap correlation test:</p>
 <span></span>
 <span><span class="co"># Compute the bootstrap p-value based on the studentized interval:</span></span>
 <span><span class="fu"><a href="../reference/boot.pval.html">boot.pval</a></span><span class="op">(</span><span class="va">boot_res</span>, type <span class="op">=</span> <span class="st">"stud"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.08608609</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.06306306</span></span></code></pre></div>
+<p>That’s all there is to it! Note that using <code>boot.pval</code> is
+completely analogous to how we use <code>boot.ci</code> from
+<code>boot</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="an-example-from-boot">An example from <code>boot</code><a class="anchor" aria-label="anchor" href="#an-example-from-boot"></a>
+</h2>
 <p>The following example is an extensions of that given in the
 documentation for <code><a href="https://rdrr.io/pkg/boot/man/boot.html" class="external-link">boot::boot</a></code>:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Hypothesis test for the city data</span></span>
 <span><span class="co"># H0: ratio = 1.4</span></span>
 <span><span class="va">ratio</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">d</span>, <span class="va">w</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">x</span> <span class="op">*</span> <span class="va">w</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">u</span> <span class="op">*</span> <span class="va">w</span><span class="op">)</span></span>
 <span><span class="va">city.boot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/boot/man/boot.html" class="external-link">boot</a></span><span class="op">(</span><span class="va">city</span>, <span class="va">ratio</span>, R <span class="op">=</span> <span class="fl">999</span>, stype <span class="op">=</span> <span class="st">"w"</span>, sim <span class="op">=</span> <span class="st">"ordinary"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/boot.pval.html">boot.pval</a></span><span class="op">(</span><span class="va">city.boot</span>, theta_null <span class="op">=</span> <span class="fl">1.4</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.4114114</span></span>
+<span><span class="co">#&gt; [1] 0.4874875</span></span>
 <span></span>
 <span><span class="co"># Studentized test for the two sample difference of means problem</span></span>
 <span><span class="co"># using the final two series of the gravity data.</span></span>
@@ -191,7 +208,7 @@ documentation for <code><a href="https://rdrr.io/pkg/boot/man/boot.html" class="
 <span><span class="va">grav1.boot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/boot/man/boot.html" class="external-link">boot</a></span><span class="op">(</span><span class="va">grav1</span>, <span class="va">diff.means</span>, R <span class="op">=</span> <span class="fl">999</span>, stype <span class="op">=</span> <span class="st">"f"</span>,</span>
 <span>                   strata <span class="op">=</span> <span class="va">grav1</span><span class="op">[</span> ,<span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/boot.pval.html">boot.pval</a></span><span class="op">(</span><span class="va">grav1.boot</span>, type <span class="op">=</span> <span class="st">"stud"</span>, theta_null <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.05005005</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.04904905</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
