@@ -1,0 +1,121 @@
+---
+title: "Creating custom bootstrap tests"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{custom_tests}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Background
+p-values can be computed by inverting the corresponding confidence intervals, as described in Section 14.2 of [Thulin (2024)](https://www.modernstatisticswithr.com/mathschap.html#confintequal) and Section 3.12 in [Hall (1992)](https://link.springer.com/book/10.1007/978-1-4612-4384-7). This package contains functions for computing bootstrap p-values in this way. The approach relies on the fact that:
+
+- The p-value of the two-sided test for the parameter theta is the smallest alpha such that theta is not contained in the corresponding 1-alpha confidence interval,
+- For a test of the parameter theta with significance level alpha, the set of values of theta that aren't rejected by the two-sided test (when used as the null hypothesis) is a 1-alpha confidence interval for theta.
+
+
+## Custom hypothesis tests
+Bootstrap p-values for hypothesis tests based on `boot` objects can be obtained using the `boot.pval` function.
+
+The example below, based on code from [Section 7.4.2 of Modern Statistics with R](https://www.modernstatisticswithr.com/modchapter.html#a-general-approach), shows how to implement a bootstrap correlation test:
+
+```{r, echo = FALSE}
+set.seed(102420)
+```
+
+
+```{r}
+library(boot)
+library(boot.pval)
+
+# Create a function for computing the correlation given a bootstrap sample:
+cor_boot <- function(data, row_numbers, method = "pearson")
+{ 
+    # Obtain the bootstrap sample:
+    sample <- data[row_numbers,]
+    
+    # Compute and return the statistic for the bootstrap sample:
+    return(cor(sample[, 1], sample[, 2], method = method))
+}
+
+# We wish to test the correlation between the variables hp and
+# drat in the mtcars data.
+# Run the resampling:
+boot_res <- mtcars |> 
+              subset(select = c(hp, drat)) |> 
+              na.omit() |> 
+              boot(cor_boot, 999)
+
+# Show the bootstrap distribution:
+plot(boot_res)
+
+# Compute confidence intervals:
+boot.ci(boot_res)
+
+# Compute the bootstrap p-value based on the percentile interval:
+boot.pval(boot_res, type = "perc")
+
+
+# For studentized intervals, we also need to estimate the
+# variance of the statistic, e.g. using an inner bootstrap:
+cor_boot_student <- function(data, row_numbers, method = "pearson")
+{ 
+    sample <- data[row_numbers,]
+    
+    correlation <- cor(sample[, 1], sample[, 2], method = method)
+    
+    inner_boot <- boot(sample, cor_boot, 100)
+    variance <- var(inner_boot$t)
+
+    return(c(correlation, variance))
+}
+
+# Run the resampling:
+boot_res <- mtcars |> 
+              subset(select = c(hp, drat)) |> 
+              boot(cor_boot_student, 999)
+
+# Compute the bootstrap p-value based on the studentized interval:
+boot.pval(boot_res, type = "stud")
+```
+
+
+The following example is an extensions of that given in the documentation for `boot::boot`:
+
+```{r message = FALSE}
+# Hypothesis test for the city data
+# H0: ratio = 1.4
+ratio <- function(d, w) sum(d$x * w)/sum(d$u * w)
+city.boot <- boot(city, ratio, R = 999, stype = "w", sim = "ordinary")
+boot.pval(city.boot, theta_null = 1.4)
+
+# Studentized test for the two sample difference of means problem
+# using the final two series of the gravity data.
+diff.means <- function(d, f)
+{
+  n <- nrow(d)
+  gp1 <- 1:table(as.numeric(d$series))[1]
+  m1 <- sum(d[gp1,1] * f[gp1])/sum(f[gp1])
+  m2 <- sum(d[-gp1,1] * f[-gp1])/sum(f[-gp1])
+  ss1 <- sum(d[gp1,1]^2 * f[gp1]) - (m1 *  m1 * sum(f[gp1]))
+  ss2 <- sum(d[-gp1,1]^2 * f[-gp1]) - (m2 *  m2 * sum(f[-gp1]))
+  c(m1 - m2, (ss1 + ss2)/(sum(f) - 2))
+}
+grav1 <- gravity[as.numeric(gravity[,2]) >= 7, ]
+grav1.boot <- boot(grav1, diff.means, R = 999, stype = "f",
+                   strata = grav1[ ,2])
+boot.pval(grav1.boot, type = "stud", theta_null = 0)
+```
+
+## References
+* Davison, A.C. and Hinkley, D.V. (1997) _Bootstrap Methods and Their Application_. Cambridge University Press.
+* Hall P (1992). _The Bootstrap and Edgeworth Expansion_. Springer, New York.
+* Thulin, M. (2024) _Modern Statistics with R_. Second edition. Chapman & Hall/CRC Press.
+

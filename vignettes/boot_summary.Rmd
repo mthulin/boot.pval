@@ -1,5 +1,5 @@
 ---
-title: "An introduction to bootstrap p-values for regression models using the boot.pval package"
+title: "Bootstrap p-values and confidence intervals for regression models"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{boot_summary}
@@ -25,10 +25,10 @@ p-values can be computed by inverting the corresponding confidence intervals, as
 Summary tables with confidence intervals and p-values for the coefficients of regression models can be obtained using the `boot_summary` (most models) and `censboot_summary` (models with censored response variables) functions. Currently, the following models are supported:
 
 - Linear models fitted using `lm`,
-- Generalised linear models fitted using `glm` or `glm.nb`,
+- Generalised linear models fitted using `glm` or `MASS::glm.nb`,
 - Nonlinear models fitted using `nls`,
 - Robust linear models fitted using `MASS::rlm`,
-- Ordered logistic or probit regression models fitted (without weights) using `MASS:polr`,
+- Ordered logistic or probit regression models fitted (without weights) using `MASS::polr`,
 - Linear mixed models fitted using `lme4::lmer` or `lmerTest::lmer`,
 - Generalised linear mixed models fitted using `lme4::glmer`.
 - Cox PH regression models fitted using `survival::coxph` (using `censboot_summary`).
@@ -37,13 +37,11 @@ Summary tables with confidence intervals and p-values for the coefficients of re
 
 A number of examples are available in Chapters 8 and 9 of [Modern Statistics with R](https://www.modernstatisticswithr.com/).
 
-```{r setup}
-library(boot.pval)
-```
-
 Here are some simple examples with a linear regression model for the `mtcars` data:
 
 ```{r message=FALSE}
+library(boot.pval)
+
 # Bootstrap summary of a linear model for mtcars:
 model <- lm(mpg ~ hp + vs, data = mtcars)
 boot_summary(model)
@@ -121,37 +119,8 @@ To speed up computations using parallelisation, use the `parallel` and `ncpus` a
 censboot_summary(model, parallel = "multicore", ncpus = 10)
 ```
 
-
-## Other hypothesis tests
-Bootstrap p-values for hypothesis tests based on `boot` objects can be obtained using the `boot.pval` function. The following examples are extensions of those given in the documentation for `boot::boot`:
-
-```{r message = FALSE}
-# Hypothesis test for the city data
-# H0: ratio = 1.4
-library(boot)
-ratio <- function(d, w) sum(d$x * w)/sum(d$u * w)
-city.boot <- boot(city, ratio, R = 999, stype = "w", sim = "ordinary")
-boot.pval(city.boot, theta_null = 1.4)
-
-# Studentized test for the two sample difference of means problem
-# using the final two series of the gravity data.
-diff.means <- function(d, f)
-{
-  n <- nrow(d)
-  gp1 <- 1:table(as.numeric(d$series))[1]
-  m1 <- sum(d[gp1,1] * f[gp1])/sum(f[gp1])
-  m2 <- sum(d[-gp1,1] * f[-gp1])/sum(f[-gp1])
-  ss1 <- sum(d[gp1,1]^2 * f[gp1]) - (m1 *  m1 * sum(f[gp1]))
-  ss2 <- sum(d[-gp1,1]^2 * f[-gp1]) - (m2 *  m2 * sum(f[-gp1]))
-  c(m1 - m2, (ss1 + ss2)/(sum(f) - 2))
-}
-grav1 <- gravity[as.numeric(gravity[,2]) >= 7, ]
-grav1.boot <- boot(grav1, diff.means, R = 999, stype = "f",
-                   strata = grav1[ ,2])
-boot.pval(grav1.boot, type = "stud", theta_null = 0)
-```
-
-## Reference
+## References
 * Davison, A.C. and Hinkley, D.V. (1997) _Bootstrap Methods and Their Application_. Cambridge University Press.
-
+* Hall P (1992). _The Bootstrap and Edgeworth Expansion_. Springer, New York.
+* Thulin, M. (2024) _Modern Statistics with R_. Second edition. Chapman & Hall/CRC Press.
 
