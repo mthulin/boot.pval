@@ -1,6 +1,6 @@
 Package: boot.pval
 Title: Bootstrap p-Values
-Version: 0.7.0.1000
+Version: 0.7.0.2000
 Authors@R: 
     person(given = "Måns",
            family = "Thulin",
@@ -12,7 +12,7 @@ URL: https://github.com/mthulin/boot.pval, https://mthulin.github.io/boot.pval/
 BugReports: https://github.com/mthulin/boot.pval/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 RdMacros: Rdpack
 Depends: R (>= 4.1.0)
 Imports: 
@@ -27,5 +27,7 @@ Imports:
     flextable
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
 VignetteBuilder: knitr
