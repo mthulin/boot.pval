@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">boot.pval</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.1000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.2000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,7 +110,7 @@ allow the user to choose which type of correlation is used:</p>
 data:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mtcars</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">hp</span> <span class="op">~</span> <span class="va">drat</span>, data <span class="op">=</span> <span class="va">_</span><span class="op">)</span></span></code></pre></div>
-<p><img src="custom_tests_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<p><img src="custom_tests_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="700"></p>
 <p>We subset the data (below I use the base R function
 <code>subset</code> for this; see my post on <a href="https://mansthulin.se/posts/basetidyverseverbs/" class="external-link">base R
 replacements of <code>tidyverse</code> functions</a> for more on this)
@@ -124,7 +124,7 @@ and then use <code>boot</code> to draw 999 bootstrap samples:</p>
 <p>If we like, we can plot the bootstrap distribution:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">boot_res</span><span class="op">)</span></span></code></pre></div>
-<p><img src="custom_tests_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<p><img src="custom_tests_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="700"></p>
 <p>And compute confidence intervals:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/boot/man/boot.ci.html" class="external-link">boot.ci</a></span><span class="op">(</span><span class="va">boot_res</span><span class="op">)</span></span>
@@ -233,7 +233,7 @@ Chapman &amp; Hall/CRC Press.</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
