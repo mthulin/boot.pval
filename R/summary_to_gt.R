@@ -16,6 +16,8 @@ summary_to_gt <- function(summary_table,
                           decimals = 3,
                           conf = "95 % CI")
 {
+  if (!requireNamespace("gt", quietly = TRUE))
+    stop("Package 'gt' is required but not installed.")
   summary_table |>
     gt::gt(rownames_to_stub = TRUE) |>
     gt::fmt_number(columns = c("Estimate", "Lower.bound", "Upper.bound"),
@@ -54,6 +56,8 @@ summary_to_flextable <- function(summary_table,
                           decimals = 3,
                           conf = "95 % CI")
 {
+  if (!requireNamespace("flextable", quietly = TRUE))
+    stop("Package 'flextable' is required but not installed.")
   summary_table$Lower.bound <- round(summary_table$Lower.bound, 3)
   summary_table$Upper.bound <- round(summary_table$Upper.bound, 3)
   summary_table$Lower.bound <- paste0("(", summary_table$Lower.bound, ", ", summary_table$Upper.bound, ")")
