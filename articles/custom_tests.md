@@ -32,6 +32,7 @@ the bootstrap sample). We also include a `method` option to allow the
 user to choose which type of correlation is used:
 
 ``` r
+
 cor_boot <- function(data, row_numbers, method = "pearson")
 { 
     # Obtain the bootstrap sample:
@@ -46,6 +47,7 @@ Let’s say that we wish to test the correlation between the variables
 `hp` and `drat` in the `mtcars` data:
 
 ``` r
+
 mtcars |> plot(hp ~ drat, data = _)
 ```
 
@@ -57,6 +59,7 @@ functions](https://mansthulin.se/posts/basetidyverseverbs/) for more on
 this) and then use `boot` to draw 999 bootstrap samples:
 
 ``` r
+
 library(boot)
 boot_res <- mtcars |> 
               subset(select = c(hp, drat)) |> 
@@ -67,6 +70,7 @@ boot_res <- mtcars |>
 If we like, we can plot the bootstrap distribution:
 
 ``` r
+
 plot(boot_res)
 ```
 
@@ -75,6 +79,7 @@ plot(boot_res)
 And compute confidence intervals:
 
 ``` r
+
 boot.ci(boot_res)
 #> Warning in boot.ci(boot_res): bootstrap variances needed for studentized
 #> intervals
@@ -98,6 +103,7 @@ To compute the p-value corresponding to the different intervals, we can
 now use `boot.pval`:
 
 ``` r
+
 # Compute the bootstrap p-value based on the percentile interval:
 library(boot.pval)
 boot.pval(boot_res, type = "perc")
@@ -109,6 +115,7 @@ statistic, e.g. using an inner bootstrap. We create a new function for
 this, run a new resampling, and compute the studentized p-value:
 
 ``` r
+
 cor_boot_student <- function(data, row_numbers, method = "pearson")
 { 
     sample <- data[row_numbers,]
@@ -141,6 +148,7 @@ documentation for
 [`boot::boot`](https://rdrr.io/pkg/boot/man/boot.html):
 
 ``` r
+
 # Hypothesis test for the city data
 # H0: ratio = 1.4
 ratio <- function(d, w) sum(d$x * w)/sum(d$u * w)

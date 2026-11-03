@@ -60,6 +60,7 @@ Here are some simple examples with a linear regression model for the
 `mtcars` data:
 
 ``` r
+
 library(boot.pval)
 
 # Bootstrap summary of a linear model for mtcars:
@@ -100,6 +101,7 @@ See Davison and Hinkley (1997) for details about residual resampling
 (the default) and case resampling.
 
 ``` r
+
 # Export results to a Word document:
 library(flextable)
 boot_summary(model, R = 9999) |>
@@ -111,6 +113,7 @@ And a toy example for a generalised linear mixed model (using a small
 number of bootstrap repetitions):
 
 ``` r
+
 library(lme4)
 model <- glmer(TICKS ~ YEAR + (1|LOCATION),
            data = grouseticks, family = poisson)
@@ -125,6 +128,7 @@ parallelisation. For `lmer` and `glmer` models, this is set using the
 number of CPUs to use is set using `ncpus`.
 
 ``` r
+
 model <- glmer(TICKS ~ YEAR + (1|LOCATION),
            data = grouseticks, family = poisson)
 boot_summary(model, R = 999, parallel = "multicore", ncpus = 10)
@@ -133,6 +137,7 @@ boot_summary(model, R = 999, parallel = "multicore", ncpus = 10)
 For other models, use `ncores`:
 
 ``` r
+
 model <- lm(mpg ~ hp + vs, data = mtcars)
 boot_summary(model, R = 9999, ncores = 10)
 ```
@@ -145,6 +150,7 @@ Survival regression models should be fitted using the argument
 coefficients (i.e. hazard ratios, in the case of a Cox PH model).
 
 ``` r
+
 library(survival)
 # Weibull AFT model:
 model <- survreg(formula = Surv(time, status) ~ age + sex, data = lung,
@@ -178,6 +184,7 @@ To speed up computations using parallelisation, use the `parallel` and
 `ncpus` arguments:
 
 ``` r
+
 censboot_summary(model, parallel = "multicore", ncpus = 10)
 ```
 

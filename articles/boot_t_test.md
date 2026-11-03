@@ -21,6 +21,7 @@ This vignette describes how to perform bootstrap t-tests and bootstrap
 median tests.
 
 ``` r
+
 library(boot.pval)
 ```
 
@@ -36,6 +37,7 @@ of sleep) variable differs between the two groups described by the
 `group` variable. The syntax for this is identical to that for `t.test`:
 
 ``` r
+
 boot_t_test(extra ~ group, data = sleep)
 #> 
 #>  Welch Two Sample Bootstrap t-test (studentized)
@@ -53,6 +55,7 @@ boot_t_test(extra ~ group, data = sleep)
 If you prefer, you can also use the `|>` pipe as follows:
 
 ``` r
+
 sleep |> boot_t_test(extra ~ group)
 ```
 
@@ -63,6 +66,7 @@ and Hinkley (1997) for details. You can choose the method used using the
 `type` argument.
 
 ``` r
+
 sleep |> boot_t_test(extra ~ group, type = "perc") # Percentile interval
 sleep |> boot_t_test(extra ~ group, type = "bca") # BCa interval
 ```
@@ -72,6 +76,7 @@ the default is 9999) or the direction of the alternative hypothesis
 (argument `alternative`):
 
 ``` r
+
 sleep |> boot_t_test(extra ~ group, R = 999, alternative = "less")
 ```
 
@@ -82,6 +87,7 @@ format, so that the first measurements ends up in the variable
 We can then run the test as follows:
 
 ``` r
+
 # Reshape to wide format:
 sleep2 <- reshape(sleep, direction = "wide",
                   idvar = "ID", timevar = "group")
@@ -100,6 +106,7 @@ vector containing the measurements. We can also specify the null value
 of the mean (argument `mu`):
 
 ``` r
+
 # Traditional interface:
 boot_t_test(sleep$extra, mu = 1)
 
@@ -117,6 +124,7 @@ bootstrap to estimate the variance of the statistic, these takes longer
 to run than other tests presented here.
 
 ``` r
+
 boot_median_test(extra ~ group, data = sleep, type = "perc")
 
 sleep |> boot_median_test(extra ~ group, R = 999, alternative = "less")

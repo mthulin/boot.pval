@@ -174,7 +174,7 @@ this way. The approach relies on the fact that:
 
 Hall P (1992). *The Bootstrap and Edgeworth Expansion*. Springer, New
 York. ISBN 9781461243847. Thulin M (2024). *Modern Statistics with R*.
-Chapman & Hall/CRC Press, Boca Raton. ISBN 9781032512440,
+Chapman & Hall/CRC Press, Boca Raton. ISBN 9781032512440.
 <https://www.modernstatisticswithr.com/>.
 
 ## See also

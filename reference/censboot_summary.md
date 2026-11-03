@@ -112,7 +112,7 @@ intervals, as described in Section 14.2 of Thulin (2024) and Section
 
 Hall P (1992). *The Bootstrap and Edgeworth Expansion*. Springer, New
 York. ISBN 9781461243847. Thulin M (2024). *Modern Statistics with R*.
-Chapman & Hall/CRC Press, Boca Raton. ISBN 9781032512440,
+Chapman & Hall/CRC Press, Boca Raton. ISBN 9781032512440.
 <https://www.modernstatisticswithr.com/>.
 
 ## Examples
