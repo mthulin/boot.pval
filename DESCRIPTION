@@ -1,6 +1,6 @@
 Package: boot.pval
 Title: Bootstrap p-Values
-Version: 0.7.0.2000
+Version: 0.7.1
 Authors@R: 
     person(given = "Måns",
            family = "Thulin",
@@ -19,13 +19,13 @@ Imports:
     boot,
     Rdpack,
     car,
-    stats,
-    lme4,
+    stats
+Suggests: 
     survival,
+    lme4,
     rms,
     gt,
-    flextable
-Suggests: 
+    flextable,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
