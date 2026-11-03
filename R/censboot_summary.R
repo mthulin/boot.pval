@@ -83,6 +83,7 @@ censboot_summary <- function(model,
   # Check arguments:
   if(!(class(model)[1] %in% c("coxph", "survreg", "psm"))) { stop("The model must be fitted using either coxph, survreg, or psm (see ?censboot_summary).") }
   if(is.null(model$model)) { stop("The model must be fitted using model=TRUE (see ?censboot_summary for examples).") }
+  if(ncol(model$model) < 2) { stop("The model does not contain any explanatory variables.") }
   if(is.null(strata)) { strata <- matrix(1, nrow(model$y), 2) }
   cox <- ifelse(class(model)[1] == "coxph", TRUE, FALSE)
 
@@ -91,7 +92,7 @@ censboot_summary <- function(model,
                      raw = "raw")
   cat("Using", res_type, "coefficients.\n")
 
-  # Creating response part of data frame, with correct column names
+  # Create response part of the model data frame, with correct column names
   # (This section is needed for models where the variables in the Surv object
   # aren't named time and status)
   survmatrix <- data.frame(as.matrix(model$model[,1]))
@@ -101,10 +102,20 @@ censboot_summary <- function(model,
   survvarnames <- gsub(" ", "", survvarnames)
   names(survmatrix) <- survvarnames
 
+  # Create explanatory part of the model data frame, with correct column names
+  # (the case when there is a single explanatory variable requires special
+  # treatment to collect the variable name properly)
+  if(ncol(model$model) > 2) {
+    expvar <- model$model[,2:ncol(model$model)]
+  } else {
+      expvar <- data.frame(x = model$model[,2])
+      names(expvar) <- names(model$model[2])
+    }
+
   if(cox) {
     # Cox PH regression:
     boot_res <- boot::censboot(data = cbind(survmatrix,
-                                            model$model[,2:ncol(model$model)]),
+                                            expvar),
                                statistic = switch(coef,
                                                   exp = exp_reg_coef_cox,
                                                   raw = reg_coef_cox),
@@ -115,9 +126,9 @@ censboot_summary <- function(model,
                                R = R,
                                ...)
   } else if(class(model)[1] == "survreg") {
-    # AFT models:
+    # AFT models created with survreg:
     boot_res <- boot::censboot(data = cbind(survmatrix,
-                                            model$model[,2:ncol(model$model)]),
+                                            expvar),
                                statistic = switch(coef,
                                                   exp = exp_reg_coef_survreg,
                                                   raw = reg_coef_survreg),
@@ -129,9 +140,9 @@ censboot_summary <- function(model,
                                R = R,
                                ...)
   } else if(class(model)[1] == "psm") {
-    # AFT models:
+    # AFT models created with psm:
     boot_res <- boot::censboot(data = cbind(survmatrix,
-                                            model$model[,2:ncol(model$model)]),
+                                            expvar),
                                statistic = switch(coef,
                                                   exp = exp_reg_coef_psm,
                                                   raw = reg_coef_psm),
